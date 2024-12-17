@@ -11,7 +11,7 @@ PreferredSizeWidget primaryAppBar({required String title}) {
       IconButton(
           onPressed: () {},
           icon: const Badge(
-              label: TextWidget(text: "0"), child: Icon(Icons.messenger_sharp)))
+              label: TextWidget(text: "0"), child: Icon(Icons.notifications)))
     ],
   );
 }
