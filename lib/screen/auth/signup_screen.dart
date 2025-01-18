@@ -1,216 +1,201 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_app/logic/auth/auth_bloc.dart';
+import 'package:my_app/screen/auth/widget/custom_dropdown_widget.dart';
+import 'package:my_app/screen/common/text_widget.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+import 'widget/custom_indput_widget.dart';
+
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
+  final Map<String, String> _formData = {
+    'fname': '',
+    'lname': '',
+    'email': '',
+    'phone': '',
+    'role': '',
+    'password': '',
+    'city': '',
+    'state': '',
+    'country': '',
+    'zipcode': '',
+  };
 
-  // Text editing controllers
-  final _nameController = TextEditingController();
-  final _usernameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _roleController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _cityController = TextEditingController();
-  final _stateController = TextEditingController();
-  final _countryController = TextEditingController();
-  final _zipcodeController = TextEditingController();
+  final List<String> _roles = ['admin', 'player', 'jury', 'referee'];
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _usernameController.dispose();
-    _phoneController.dispose();
-    _roleController.dispose();
-    _passwordController.dispose();
-    _cityController.dispose();
-    _stateController.dispose();
-    _countryController.dispose();
-    _zipcodeController.dispose();
-    super.dispose();
+  bool get _isFormValid => _formData.values.every((value) => value.isNotEmpty);
+
+  void _onSubmit() {
+    if (_formKey.currentState!.validate()) {
+      print(_formData);
+      context.read<AuthBloc>().add(
+            SignupEvent(
+              fname: _formData['fname']!,
+              lname: _formData['lname']!,
+              email: _formData['email']!,
+              phone: _formData['phone']!,
+              role: _formData['role']!,
+              password: _formData['password']!,
+              city: _formData['city']!,
+              state: _formData['state']!,
+              country: _formData['country']!,
+              zipcode: _formData['zipcode']!,
+              context: context,
+            ),
+          );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: const Text('Sign Up'),
-        centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                CustomInputField(
+                  label: 'First Name',
+                  value: _formData['fname'],
+                  onChanged: (value) =>
+                      setState(() => _formData['fname'] = value),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _usernameController,
-                decoration: const InputDecoration(
-                  labelText: 'Username',
-                  border: OutlineInputBorder(),
+                CustomInputField(
+                  label: 'Last Name',
+                  value: _formData['lname'],
+                  onChanged: (value) =>
+                      setState(() => _formData['lname'] = value),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a username';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _phoneController,
-                decoration: const InputDecoration(
-                  labelText: 'Phone',
-                  border: OutlineInputBorder(),
+                CustomInputField(
+                  label: 'Email',
+                  value: _formData['email'],
+                  keyboardType: TextInputType.emailAddress,
+                  onChanged: (value) =>
+                      setState(() => _formData['email'] = value),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter email';
+                    }
+                    if (!value.contains('@')) {
+                      return 'Please enter a valid email';
+                    }
+                    return null;
+                  },
                 ),
-                keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your phone number';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _roleController,
-                decoration: const InputDecoration(
-                  labelText: 'Role',
-                  border: OutlineInputBorder(),
+                CustomInputField(
+                  label: 'Phone',
+                  value: _formData['phone'],
+                  keyboardType: TextInputType.phone,
+                  onChanged: (value) =>
+                      setState(() => _formData['phone'] = value),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your role';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _passwordController,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
+                CustomDropdown(
+                  label: 'Role',
+                  value: _formData['role'],
+                  items: _roles,
+                  onChanged: (value) =>
+                      setState(() => _formData['role'] = value ?? ''),
                 ),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a password';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _cityController,
-                decoration: const InputDecoration(
-                  labelText: 'City',
-                  border: OutlineInputBorder(),
+                CustomInputField(
+                  label: 'Password',
+                  value: _formData['password'],
+                  isPassword: true,
+                  onChanged: (value) =>
+                      setState(() => _formData['password'] = value),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter password';
+                    }
+                    if (value.length < 6) {
+                      return 'Password must be at least 6 characters';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your city';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _stateController,
-                decoration: const InputDecoration(
-                  labelText: 'State',
-                  border: OutlineInputBorder(),
+                CustomInputField(
+                  label: 'City',
+                  value: _formData['city'],
+                  onChanged: (value) =>
+                      setState(() => _formData['city'] = value),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your state';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _countryController,
-                decoration: const InputDecoration(
-                  labelText: 'Country',
-                  border: OutlineInputBorder(),
+                CustomInputField(
+                  label: 'State',
+                  value: _formData['state'],
+                  onChanged: (value) =>
+                      setState(() => _formData['state'] = value),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your country';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _zipcodeController,
-                decoration: const InputDecoration(
-                  labelText: 'Zipcode',
-                  border: OutlineInputBorder(),
+                CustomInputField(
+                  label: 'Country',
+                  value: _formData['country'],
+                  onChanged: (value) =>
+                      setState(() => _formData['country'] = value),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your zipcode';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    // Handle sign up logic here
-                    final signupData = {
-                      'name': _nameController.text,
-                      'username': _usernameController.text,
-                      'phone': _phoneController.text,
-                      'role': _roleController.text,
-                      'password': _passwordController.text,
-                      'city': _cityController.text,
-                      'state': _stateController.text,
-                      'country': _countryController.text,
-                      'zipcode': _zipcodeController.text,
-                    };
-                    print(signupData); // Replace with your signup logic
-                  }
-                },
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16.0),
-                  child: Text(
-                    'Sign Up',
-                    style: TextStyle(fontSize: 16),
-                  ),
+                CustomInputField(
+                  label: 'Zipcode',
+                  value: _formData['zipcode'],
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) =>
+                      setState(() => _formData['zipcode'] = value),
                 ),
-              ),
-              const SizedBox(height: 16),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Go back to login screen
-                },
-                child: const Text('Already have an account? Login'),
-              ),
-            ],
+                const SizedBox(height: 24),
+                BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    return state.isLoading
+                        ? Align(
+                            child: CircularProgressIndicator(),
+                          )
+                        : Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextWidget(
+                                text: state.signUpError ?? "",
+                                color: Colors.red,
+                              ),
+                              SizedBox(
+                                height: state.signUpError != null ? 10 : 0,
+                              ),
+                              ElevatedButton(
+                                onPressed: _isFormValid ? _onSubmit : null,
+                                style: ElevatedButton.styleFrom(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: const Text('Sign Up'),
+                              ),
+                            ],
+                          );
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Already have an account? Sign In'),
+                ),
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
       ),

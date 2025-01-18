@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _navigateToRegister() {
-    pushScreen(context, const SignUpScreen());
+    pushReplaceScreen(context, const SignupScreen());
   }
 
   @override

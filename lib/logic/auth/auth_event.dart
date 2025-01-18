@@ -9,3 +9,30 @@ class LoginEvent extends AuthEvent {
   String phoneNum;
   String password;
 }
+
+class SignupEvent extends AuthEvent {
+  SignupEvent(
+      {required this.fname,
+      required this.lname,
+      required this.email,
+      required this.phone,
+      required this.role,
+      required this.password,
+      required this.city,
+      required this.state,
+      required this.country,
+      required this.zipcode,
+      required this.context});
+
+  final String fname;
+  final String lname;
+  final String email;
+  final String phone;
+  final String role;
+  final String password;
+  final String city;
+  final String state;
+  final String country;
+  final String zipcode;
+  BuildContext context;
+}
