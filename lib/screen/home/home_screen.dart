@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../utils/dummy_data.dart';
-import 'widgets/add_event_button.dart';
 import 'widgets/event_list.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -31,7 +30,7 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: const AddEventButton(),
+      // floatingActionButton: const AddEventButton(),
     );
   }
 }

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_app/config/shared_prefs_config.dart';
 import 'package:my_app/logic/auth/auth_bloc.dart';
+import 'package:my_app/logic/event/event_bloc.dart';
 import 'package:my_app/screen/auth/login_screen.dart';
-import 'package:my_app/screen/home/home_screen.dart';
+import 'package:my_app/screen/main/main_screen.dart';
 
 import 'config/constants/colors.dart';
 import 'logic/navigation_bloc/navigation_bloc.dart';
@@ -25,7 +26,8 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider(create: (context) => NavigationBloc()),
           BlocProvider(create: (context) => SocketBloc()),
-          BlocProvider(create: (context) => AuthBloc())
+          BlocProvider(create: (context) => AuthBloc()),
+          BlocProvider(create: (context) => EventBloc())
         ],
         child: MaterialApp(
             title: 'MMA Scoring',
@@ -34,7 +36,7 @@ class MyApp extends StatelessWidget {
               scaffoldBackgroundColor: AppColors.background,
             ),
             home: SharedPrefsConfig.getBool(SharedPrefsConfig.keyIsLoggedIn)
-                ? HomeScreen()
+                ? MainScreen()
                 : const LoginScreen()));
   }
 }

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_app/config/shared_prefs_config.dart';
 import 'package:my_app/logic/navigation_bloc/navigation_bloc.dart';
-import 'package:my_app/models/login_model.dart';
-import 'package:my_app/screen/common/app_bar_widgets.dart';
 import 'package:my_app/screen/home/home_screen.dart';
 import 'package:my_app/screen/profile/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
-  final LoginModel? loginModel;
-  const MainScreen({super.key, required this.loginModel});
+  const MainScreen({
+    super.key,
+  });
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -27,6 +27,8 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void initState() {
+    print(
+        "${SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken)}tokennnnnnn");
     screens = [
       const HomeScreen(),
 
@@ -42,7 +44,6 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: primaryAppBar(title: "Login model"),
       bottomNavigationBar: BlocBuilder<NavigationBloc, NavigationState>(
         builder: (context, state) {
           return BottomNavigationBar(

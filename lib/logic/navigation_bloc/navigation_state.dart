@@ -7,5 +7,6 @@ final class NavigationInitial extends NavigationState {
 class NavigationState {
   int currentScreen;
 
+
   NavigationState({required this.currentScreen});
 }

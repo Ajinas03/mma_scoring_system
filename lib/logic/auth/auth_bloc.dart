@@ -4,7 +4,7 @@ import 'package:my_app/config/screen_config.dart';
 import 'package:my_app/config/shared_prefs_config.dart';
 import 'package:my_app/config/toast_config.dart';
 import 'package:my_app/models/auth_model.dart';
-import 'package:my_app/screen/home/home_screen.dart';
+import 'package:my_app/screen/main/main_screen.dart';
 
 import '../../repo/auth_repo.dart';
 
@@ -50,7 +50,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             ToastConfig.showSuccess(event.context, "Login Success");
 
             // Navigate to HomeScreen after login
-            pushReplaceScreen(event.context, HomeScreen());
+            pushReplaceScreen(event.context, MainScreen());
 
             emit(AuthState(isLoading: false));
             print("Auth Success: $response");
@@ -97,7 +97,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               accessToken: authModel?.token ?? "",
             );
 
-            pushReplaceScreen(event.context, HomeScreen());
+            pushReplaceScreen(event.context, MainScreen());
             emit(AuthState(isLoading: false));
             print("Signup and Login Success");
             ToastConfig.showSuccess(event.context, "Signup and Login Success");

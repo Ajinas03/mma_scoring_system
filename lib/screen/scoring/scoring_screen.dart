@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../logic/bloc/scoring/scoring_bloc.dart';
+import '../../logic/scoring/scoring_bloc.dart';
 import 'widgets/main_jury_controls.dart';
 import 'widgets/score_board.dart';
 import 'widgets/scoring_controls.dart';
