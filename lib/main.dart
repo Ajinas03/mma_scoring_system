@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mma_scoring_system/logic/navigation_bloc/navigation_bloc.dart';
-import 'package:mma_scoring_system/screen/home/home_screen.dart';
+import 'package:my_app/screen/auth/login_screen.dart';
 
-void main() {
+import 'config/constants/colors.dart';
+import 'logic/navigation_bloc/navigation_bloc.dart';
+import 'logic/socket/socket_bloc.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -13,17 +17,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => NavigationBloc()),
-      ],
-      child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'MMA Scoring',
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-          ),
-          home: const HomeScreen()),
-    );
+        providers: [
+          BlocProvider(create: (context) => NavigationBloc()),
+          BlocProvider(create: (context) => SocketBloc())
+        ],
+        child: MaterialApp(
+            title: 'MMA Scoring',
+            theme: ThemeData(
+              primaryColor: AppColors.primary,
+              scaffoldBackgroundColor: AppColors.background,
+            ),
+            home: const LoginScreen()
+
+            // const MainScreen(
+            //   loginModel: null,
+            // ),
+            ));
   }
 }

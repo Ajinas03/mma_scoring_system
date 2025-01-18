@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mma_scoring_system/screen/common/text_widget.dart';
+import 'package:my_app/screen/common/text_widget.dart';
 
 PreferredSizeWidget primaryAppBar({required String title}) {
   return AppBar(

@@ -1,4 +1,4 @@
-# mma_scoring_system
+# my_app
 
 A new Flutter project.
 

@@ -1,14 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:mma_scoring_system/screen/common/app_bar_widgets.dart';
-import 'package:mma_scoring_system/screen/common/text_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_app/screen/common/app_bar_widgets.dart';
+import 'package:my_app/screen/common/text_widget.dart';
+import 'package:my_app/screen/event/event_widgets/score_section.dart';
+import 'package:my_app/screen/event/event_widgets/timer_widget.dart';
+
+import '../../logic/socket/socket_bloc.dart';
+import '../../models/login_model.dart';
 
 class EventDetailsScreen extends StatelessWidget {
-  const EventDetailsScreen({super.key});
+  final LoginModel? loginModel;
+  const EventDetailsScreen({super.key, required this.loginModel});
+  final String socketUrl = "wss://qatwigoai.exomemed.com/ws/events";
 
+  // "ws://10.0.2.2:8000/room/ws";
   @override
   Widget build(BuildContext context) {
+    final socketBloc = BlocProvider.of<SocketBloc>(context);
+
     return Scaffold(
-      appBar: secondaryAppBar(title: "Event Name"),
+      appBar: secondaryAppBar(title: "Event Name  ${loginModel?.username}  "),
+      floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.rocket_rounded),
+          onPressed: () {
+            socketBloc.add(ConnectSocket(url: socketUrl));
+          }),
       body: Column(
         children: [
           const Column(
@@ -26,6 +42,7 @@ class EventDetailsScreen extends StatelessWidget {
               ),
             ],
           ),
+          const TimerWidget(),
           Flexible(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -55,141 +72,62 @@ class EventDetailsScreen extends StatelessWidget {
               ],
             ),
           ),
-          Expanded(
+          const Flexible(
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               children: [
                 Expanded(
-                  child: Container(
-                    color: Colors.blue.withOpacity(0.9),
-                    child: const Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 50,
-                                backgroundImage: NetworkImage(
-                                    "https://imgs.search.brave.com/Eg2ncutJOiAUTXbbRnFaJHlOBKIYl9-MFOga4QFdVgk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cG5nbWFydC5jb20v/ZmlsZXMvMTYvSGFu/ZC1QdW5jaC1UcmFu/c3BhcmVudC1QTkcu/cG5n"),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              TextWidget(
-                                text: "+5",
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 50,
-                                backgroundImage: NetworkImage(
-                                    "https://imgs.search.brave.com/8fuDW6c9gY3IbG0OCtsfu2l54YMDTn-8SYjOUlte2O0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4t/aWNvbnMtcG5nLmZs/YXRpY29uLmNvbS81/MTIvMjkyOS8yOTI5/ODcxLnBuZw"),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              TextWidget(
-                                text: "+5",
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 50,
-                                backgroundImage: NetworkImage(
-                                    "https://imgs.search.brave.com/QECvL-cPsIPU1Pp0ikidNm71m4YV5DbgolAIamrQc-c/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG40/Lmljb25maW5kZXIu/Y29tL2RhdGEvaWNv/bnMvbXVheS10aGFp/LzUxMi9NdWF5VGhh/aS0wOC0xMjgucG5n"),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              TextWidget(
-                                text: "+5",
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                  child: ScoreSection(
+                    hero: "sd",
+                    bgColor: Colors.red,
                   ),
                 ),
                 Expanded(
-                  child: Container(
-                    color: Colors.red.withOpacity(0.9),
-                    child: const Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 50,
-                                backgroundImage: NetworkImage(
-                                    "https://imgs.search.brave.com/Eg2ncutJOiAUTXbbRnFaJHlOBKIYl9-MFOga4QFdVgk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cG5nbWFydC5jb20v/ZmlsZXMvMTYvSGFu/ZC1QdW5jaC1UcmFu/c3BhcmVudC1QTkcu/cG5n"),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              TextWidget(
-                                text: "+5",
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 50,
-                                backgroundImage: NetworkImage(
-                                    "https://imgs.search.brave.com/8fuDW6c9gY3IbG0OCtsfu2l54YMDTn-8SYjOUlte2O0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4t/aWNvbnMtcG5nLmZs/YXRpY29uLmNvbS81/MTIvMjkyOS8yOTI5/ODcxLnBuZw"),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              TextWidget(
-                                text: "+5",
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 50,
-                                backgroundImage: NetworkImage(
-                                    "https://imgs.search.brave.com/QECvL-cPsIPU1Pp0ikidNm71m4YV5DbgolAIamrQc-c/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG40/Lmljb25maW5kZXIu/Y29tL2RhdGEvaWNv/bnMvbXVheS10aGFp/LzUxMi9NdWF5VGhh/aS0wOC0xMjgucG5n"),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              TextWidget(
-                                text: "+5",
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                  child: ScoreSection(
+                    hero: "hg",
+                    bgColor: Colors.blue,
                   ),
-                )
+                ),
               ],
             ),
-          )
+          ),
+          Expanded(
+            child: BlocBuilder<SocketBloc, SocketState>(
+              builder: (context, state) {
+                if (state is SocketConnected) {
+                  return const TextWidget(
+                    textAlign: TextAlign.center,
+                    text: "Connected to WebSocket",
+                    fontSize: 30,
+                  );
+                } else if (state is SocketMessage) {
+                  return TextWidget(
+                    textAlign: TextAlign.center,
+                    text: "Message: ${state.message}",
+                    fontSize: 30,
+                  );
+                } else if (state is SocketError) {
+                  return TextWidget(
+                    textAlign: TextAlign.center,
+                    text: "Error: ${state.message}",
+                    fontSize: 30,
+                  );
+                } else if (state is SocketDisconnectedState) {
+                  return const TextWidget(
+                    textAlign: TextAlign.center,
+                    text: "Disconnected from WebSocket",
+                    fontSize: 30,
+                  );
+                }
+                return const TextWidget(
+                  textAlign: TextAlign.center,
+                  text: "Waiting for action...",
+                  fontSize: 30,
+                );
+              },
+            ),
+          ),
         ],
       ),
     );

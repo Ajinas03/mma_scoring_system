@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mma_scoring_system/config/screen_config.dart';
-import 'package:mma_scoring_system/screen/common/app_bar_widgets.dart';
-import 'package:mma_scoring_system/screen/common/text_widget.dart';
-import 'package:mma_scoring_system/screen/event/event_details_screen.dart';
+import 'package:my_app/config/screen_config.dart';
+import 'package:my_app/models/login_model.dart';
+import 'package:my_app/screen/common/app_bar_widgets.dart';
+import 'package:my_app/screen/common/text_widget.dart';
+import 'package:my_app/screen/event/event_details_screen.dart';
+import 'package:my_app/screen/event/event_details_screen_admin.dart';
 
 class EventScreen extends StatelessWidget {
-  const EventScreen({super.key});
+  final LoginModel? loginModel;
+  const EventScreen({super.key, required this.loginModel});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +39,13 @@ class EventScreen extends StatelessWidget {
           itemBuilder: (context, index) {
             return ListTile(
               onTap: () {
-                pushScreen(context, const EventDetailsScreen());
+                pushScreen(
+                    context,
+                    index.isEven
+                        ? EventDetailsScreen(
+                            loginModel: loginModel,
+                          )
+                        : const EventDetailsScreenAdmin());
               },
               title: const TextWidget(text: "Event Name"),
               subtitle: TextWidget(
