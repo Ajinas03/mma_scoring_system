@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_app/screen/common/app_bar_widgets.dart';
 import 'package:my_app/screen/common/text_widget.dart';
-import 'package:my_app/screen/event/event_widgets/score_section.dart';
-import 'package:my_app/screen/event/event_widgets/timer_widget.dart';
+import 'package:my_app/screen/round/round_widgets/score_section.dart';
+import 'package:my_app/screen/round/round_widgets/timer_widget.dart';
 
 import '../../logic/socket/socket_bloc.dart';
 import '../../models/login_model.dart';
 
-class EventDetailsScreen extends StatelessWidget {
+class RoundDetailsScreen extends StatelessWidget {
   final LoginModel? loginModel;
-  const EventDetailsScreen({super.key, required this.loginModel});
+  const RoundDetailsScreen({super.key, required this.loginModel});
   final String socketUrl = "wss://qatwigoai.exomemed.com/ws/events";
 
   // "ws://10.0.2.2:8000/room/ws";

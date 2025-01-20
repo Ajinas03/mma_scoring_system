@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_app/config/constants/api_constants.dart';
 import 'package:my_app/config/shared_prefs_config.dart';
 import 'package:my_app/config/toast_config.dart';
+import 'package:my_app/logic/event/event_bloc.dart';
 
 import '../models/create_event_model.dart';
 import '../models/event_resp_model.dart';
@@ -33,17 +35,19 @@ class EventRepo {
       // Parse response
       final responseData = jsonDecode(response.body);
 
-      if (response.statusCode == 201) {
-        ToastConfig.showSuccess(context, 'Event created successfully');
+      if (response.statusCode != 201) {
+        ToastConfig.showSuccess(
+            context, responseData['message'] ?? 'Failed to create event');
 
+        context.read<EventBloc>().add(GetEvent());
+        Navigator.pop(context);
         return ApiResponse(
           success: true,
           message: 'Event created successfully',
           data: responseData,
         );
       } else {
-        ToastConfig.showSuccess(
-            context, responseData['message'] ?? 'Failed to create event');
+        ToastConfig.showSuccess(context, 'Event created successfully');
         return ApiResponse(
           success: false,
           message: responseData['message'] ?? 'Failed to create event',

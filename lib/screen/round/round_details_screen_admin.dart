@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/screen/common/app_bar_widgets.dart';
 import 'package:my_app/screen/common/text_widget.dart';
-import 'package:my_app/screen/event/event_widgets/fade_animated_list_view.dart';
-import 'package:my_app/screen/event/event_widgets/timer_widget.dart';
+import 'package:my_app/screen/round/round_widgets/fade_animated_list_view.dart';
+import 'package:my_app/screen/round/round_widgets/timer_widget.dart';
 
-class EventDetailsScreenAdmin extends StatelessWidget {
-  const EventDetailsScreenAdmin({super.key});
+class RoundDetailsScreenAdmin extends StatelessWidget {
+  const RoundDetailsScreenAdmin({super.key});
 
   @override
   Widget build(BuildContext context) {

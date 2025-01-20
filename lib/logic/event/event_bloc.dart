@@ -22,9 +22,15 @@ class EventBloc extends Bloc<EventEvent, EventState> {
       if (event is CreateEvent) {
         emit(EventState(isLoading: true, events: state.events));
 
-        final resp = EventRepo.createEvent(
+        final resp = await EventRepo.createEvent(
             event: event.createEventRequest, context: event.context);
-        emit(EventState(isLoading: false, events: state.events));
+
+        if (resp.success) {
+          emit(EventState(isLoading: false, events: state.events));
+        } else {
+          emit(EventState(isLoading: false, events: state.events));
+        }
+
         print(resp);
       }
     });

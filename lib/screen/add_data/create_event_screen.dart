@@ -158,7 +158,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   return state.isLoading
                       ? Padding(
                           padding: EdgeInsets.all(8),
-                          child: CircularProgressIndicator(),
+                          child: Center(child: CircularProgressIndicator()),
                         )
                       : _buildSubmitButton();
                 },

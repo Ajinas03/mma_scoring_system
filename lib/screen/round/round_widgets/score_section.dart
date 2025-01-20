@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_app/screen/event/event_widgets/score_button.dart';
+import 'package:my_app/screen/round/round_widgets/score_button.dart';
 
 import '../../../logic/socket/socket_bloc.dart';
 

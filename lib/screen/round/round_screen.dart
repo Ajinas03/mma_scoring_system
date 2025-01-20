@@ -4,8 +4,8 @@ import 'package:my_app/config/screen_config.dart';
 import 'package:my_app/models/login_model.dart';
 import 'package:my_app/screen/common/app_bar_widgets.dart';
 import 'package:my_app/screen/common/text_widget.dart';
-import 'package:my_app/screen/event/event_details_screen.dart';
-import 'package:my_app/screen/event/event_details_screen_admin.dart';
+import 'package:my_app/screen/round/round_details_screen.dart';
+import 'package:my_app/screen/round/round_details_screen_admin.dart';
 
 class EventScreen extends StatelessWidget {
   final LoginModel? loginModel;
@@ -42,10 +42,10 @@ class EventScreen extends StatelessWidget {
                 pushScreen(
                     context,
                     index.isEven
-                        ? EventDetailsScreen(
+                        ? RoundDetailsScreen(
                             loginModel: loginModel,
                           )
-                        : const EventDetailsScreenAdmin());
+                        : const RoundDetailsScreenAdmin());
               },
               title: const TextWidget(text: "Event Name"),
               subtitle: TextWidget(
