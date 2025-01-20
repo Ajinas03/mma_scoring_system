@@ -32,7 +32,7 @@ class _MainScreenState extends State<MainScreen> {
     screens = [
       const HomeScreen(),
 
-      // EventScreen(
+      // RoundScreen(
       //   loginModel: widget.loginModel,
       // ),
       const ProfileScreen()

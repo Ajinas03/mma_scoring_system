@@ -5,14 +5,14 @@ import 'package:intl/intl.dart';
 import 'package:my_app/logic/event/event_bloc.dart';
 import 'package:my_app/models/create_event_model.dart';
 
-class CreateEventScreen extends StatefulWidget {
-  const CreateEventScreen({super.key});
+class CreateRoundScreen extends StatefulWidget {
+  const CreateRoundScreen({super.key});
 
   @override
-  State<CreateEventScreen> createState() => _CreateEventScreenState();
+  State<CreateRoundScreen> createState() => _CreateRoundScreenState();
 }
 
-class _CreateEventScreenState extends State<CreateEventScreen> {
+class _CreateRoundScreenState extends State<CreateRoundScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _categoryController = TextEditingController();

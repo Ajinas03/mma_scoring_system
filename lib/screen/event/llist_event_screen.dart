@@ -4,12 +4,13 @@ import 'package:my_app/config/screen_config.dart';
 import 'package:my_app/screen/add_data/create_event_screen.dart';
 import 'package:my_app/screen/common/app_bar_widgets.dart';
 import 'package:my_app/screen/common/text_widget.dart';
+import 'package:my_app/screen/event/event_details_screen.dart';
 
 import '../../logic/event/event_bloc.dart';
-import 'widget/event_tile.dart';
+import '../add_data/widget/event_tile.dart';
 
-class AddEventScreen extends StatelessWidget {
-  const AddEventScreen({super.key});
+class AddRoundScreen extends StatelessWidget {
+  const AddRoundScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class AddEventScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
-            pushScreen(context, CreateEventScreen());
+            pushScreen(context, CreateRoundScreen());
           }),
       body: BlocBuilder<EventBloc, EventState>(
         builder: (context, state) {
@@ -36,7 +37,11 @@ class AddEventScreen extends StatelessWidget {
                       itemBuilder: (context, index) {
                         return EventListTile(
                           event: items[index],
-                          onTap: () => print('Event tapped!'),
+                          onTap: () => pushScreen(
+                              context,
+                              EventDetailsScreen(
+                                eventDetails: items[index],
+                              )),
                         );
                       });
         },

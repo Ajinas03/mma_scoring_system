@@ -12,7 +12,7 @@ class ApiConstants {
       "https://masternode-856921708890.asia-south1.run.app";
 
   static const String login = "/api/v1.0/login";
-  static const String createFighter = "/api/v1.0/create-fighter";
+  static const String createParticipant = "/api/v1.0/create-participant";
   static const String getEvents = "/api/v1.0/events";
   static const String createEvent = "/api/v1.0/create_event";
   static const String signUp = "/api/v1.0/signup";

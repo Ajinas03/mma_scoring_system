@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_app/config/screen_config.dart';
 import 'package:my_app/config/shared_prefs_config.dart';
-import 'package:my_app/screen/add_data/llist_event_screen.dart';
 import 'package:my_app/screen/auth/login_screen.dart';
+import 'package:my_app/screen/event/llist_event_screen.dart';
 import 'package:my_app/screen/profile/profile_widget/profile_button.dart';
 
 import '../../logic/event/event_bloc.dart';
@@ -45,13 +45,13 @@ class ProfileScreen extends StatelessWidget {
                   onTap: () {
                     context.read<EventBloc>().add(GetEvent());
 
-                    pushScreen(context, AddEventScreen());
+                    pushScreen(context, AddRoundScreen());
                   }),
               ProfileListTileButton(
                   leadingIcon: Icons.group_add_outlined,
                   title: "Fighter",
                   onTap: () {
-                    pushScreen(context, AddEventScreen());
+                    pushScreen(context, AddRoundScreen());
                   }),
               LogoutButton(
                 onLogout: () {

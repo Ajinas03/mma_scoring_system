@@ -7,9 +7,9 @@ import 'package:my_app/screen/common/text_widget.dart';
 import 'package:my_app/screen/round/round_details_screen.dart';
 import 'package:my_app/screen/round/round_details_screen_admin.dart';
 
-class EventScreen extends StatelessWidget {
+class RoundScreen extends StatelessWidget {
   final LoginModel? loginModel;
-  const EventScreen({super.key, required this.loginModel});
+  const RoundScreen({super.key, required this.loginModel});
 
   @override
   Widget build(BuildContext context) {

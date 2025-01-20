@@ -115,6 +115,42 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           print("Signup failed: $e");
         }
       }
+
+      if (event is CreateParticipantEvent) {
+        emit(AuthState(isLoading: true));
+
+        try {
+          var resp = await authRepo.createParticipant(
+              eventId: event.eventId,
+              fName: event.fname,
+              lName: event.lname,
+              email: event.email,
+              phone: event.phone,
+              role: event.role,
+              city: event.city,
+              state: event.state,
+              country: event.country,
+              zipCode: event.zipcode,
+              dob: event.dob,
+              gender: event.gender,
+              weight: event.weight);
+
+          // After successful signup, automatically login the user
+
+          Navigator.pop(event.context);
+          // pushReplaceScreen(event.context, MainScreen());
+          emit(AuthState(isLoading: false));
+          print("create participant Success  $resp");
+          ToastConfig.showSuccess(event.context, "create participant Success");
+
+          emit(AuthState(
+            isLoading: false,
+          ));
+        } catch (e) {
+          emit(AuthState(isLoading: false, signUpError: e.toString()));
+          print("create participant failed: $e");
+        }
+      }
     });
   }
 }
