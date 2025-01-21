@@ -16,4 +16,5 @@ class ApiConstants {
   static const String getEvents = "/api/v1.0/events";
   static const String createEvent = "/api/v1.0/create_event";
   static const String signUp = "/api/v1.0/signup";
+  static const String getParticipants = "/api/v1.0/get-participants/";
 }

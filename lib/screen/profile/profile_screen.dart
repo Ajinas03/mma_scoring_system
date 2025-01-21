@@ -44,7 +44,6 @@ class ProfileScreen extends StatelessWidget {
                   title: "Events",
                   onTap: () {
                     context.read<EventBloc>().add(GetEvent());
-
                     pushScreen(context, AddRoundScreen());
                   }),
               ProfileListTileButton(

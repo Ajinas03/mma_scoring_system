@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_app/config/screen_config.dart';
 import 'package:my_app/screen/add_data/create_participants_screen.dart.dart';
+import 'package:my_app/screen/event/widget/participant_display.dart';
 
 import '../../models/event_resp_model.dart';
 import '../profile/profile_widget/profile_button.dart';
@@ -18,6 +19,7 @@ class EventDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("event id ===========  ${eventDetails?.eventId}");
     return Scaffold(
       appBar: AppBar(
         title: const Text('Event Details'),
@@ -31,6 +33,7 @@ class EventDetailsScreen extends StatelessWidget {
               eventName: eventDetails?.name ?? '',
               eventCategory: eventDetails?.category ?? '',
             ),
+            ParticipantDisplay(eventId: eventDetails?.eventId ?? ""),
             ProfileListTileButton(
                 leadingIcon: Icons.group_add_outlined,
                 title: "Add Players",

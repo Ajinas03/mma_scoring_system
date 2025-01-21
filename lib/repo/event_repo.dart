@@ -10,6 +10,7 @@ import 'package:my_app/logic/event/event_bloc.dart';
 
 import '../models/create_event_model.dart';
 import '../models/event_resp_model.dart';
+import '../models/get_participants_model.dart';
 
 class EventRepo {
   static const String baseUrl = ApiConstants.baseUrl;
@@ -79,12 +80,57 @@ class EventRepo {
       } else {
         final errorMessage =
             json.decode(response.body)['message'] ?? 'Failed to fetch events';
-        throw Exception(errorMessage);
+        print("get event error : $errorMessage");
+        return [];
       }
     } on FormatException {
-      throw Exception('Invalid response format');
+      return [];
     } catch (e) {
-      throw Exception('Error fetching events: ${e.toString()}');
+      return [];
+    }
+  }
+
+  // New method to get participants
+  static Future<GetParicipantsModel> getParticipants(String eventId) async {
+    final bearerToken =
+        SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
+    try {
+      final response = await http.get(
+        Uri.parse(
+            '$baseUrl${ApiConstants.getParticipants}$eventId'), // Add getParticipants endpoint in ApiConstants
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $bearerToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return getParicipantsModelFromJson(response.body);
+      } else {
+        print("get participants error : ${response.body}");
+        // Return empty model if API call fails
+        return GetParicipantsModel(
+          eventId: eventId,
+          players: [],
+          jury: [],
+          referees: [],
+        );
+      }
+    } on FormatException {
+      return GetParicipantsModel(
+        eventId: eventId,
+        players: [],
+        jury: [],
+        referees: [],
+      );
+    } catch (e) {
+      print("get participants error : $e");
+      return GetParicipantsModel(
+        eventId: eventId,
+        players: [],
+        jury: [],
+        referees: [],
+      );
     }
   }
 }

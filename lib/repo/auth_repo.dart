@@ -143,16 +143,17 @@ class AuthRepository {
 
       // Check if the response status code is 200 (success)
       if (response.statusCode == 200) {
-        print('Success: ${response.body}');
+        print('Create participant  Success: ${response.body}');
         return true;
       } else {
         // Handle error if status code is not 200
-        print('Error: ${response.statusCode}, ${response.body}');
+        print(
+            'Create participant  Error: ${response.statusCode}, ${response.body}  bodyy ::: $bodyData');
         return false;
       }
     } catch (e) {
       // Handle any errors during the request
-      print('Error making the request: $e');
+      print('Create participant   Error making the request: $e');
       return false;
     }
   }

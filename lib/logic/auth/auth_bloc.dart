@@ -1,8 +1,9 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_app/config/screen_config.dart';
 import 'package:my_app/config/shared_prefs_config.dart';
 import 'package:my_app/config/toast_config.dart';
+import 'package:my_app/logic/event/event_bloc.dart';
 import 'package:my_app/models/auth_model.dart';
 import 'package:my_app/screen/main/main_screen.dart';
 
@@ -142,7 +143,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthState(isLoading: false));
           print("create participant Success  $resp");
           ToastConfig.showSuccess(event.context, "create participant Success");
-
+          event.context
+              .read<EventBloc>()
+              .add(GetEventParticipants(eventId: event.eventId));
           emit(AuthState(
             isLoading: false,
           ));

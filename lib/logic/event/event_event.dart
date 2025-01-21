@@ -10,3 +10,9 @@ class CreateEvent extends EventEvent {
 }
 
 class GetEvent extends EventEvent {}
+
+class GetEventParticipants extends EventEvent {
+  String eventId;
+
+  GetEventParticipants({required this.eventId});
+}

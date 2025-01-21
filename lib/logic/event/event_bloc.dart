@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_app/models/create_event_model.dart';
+import 'package:my_app/models/get_participants_model.dart';
 import 'package:my_app/repo/event_repo.dart';
 
 import '../../models/event_resp_model.dart';
@@ -32,6 +34,14 @@ class EventBloc extends Bloc<EventEvent, EventState> {
         }
 
         print(resp);
+      }
+
+      if (event is GetEventParticipants) {
+        final getParticipants = await EventRepo.getParticipants(event.eventId);
+        emit(EventState(
+            isLoading: false,
+            events: state.events,
+            getParicipantsModel: getParticipants));
       }
     });
   }

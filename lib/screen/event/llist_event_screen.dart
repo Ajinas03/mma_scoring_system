@@ -37,11 +37,16 @@ class AddRoundScreen extends StatelessWidget {
                       itemBuilder: (context, index) {
                         return EventListTile(
                           event: items[index],
-                          onTap: () => pushScreen(
-                              context,
-                              EventDetailsScreen(
-                                eventDetails: items[index],
-                              )),
+                          onTap: () {
+                            context.read<EventBloc>().add(GetEventParticipants(
+                                eventId: items[index].eventId));
+
+                            pushScreen(
+                                context,
+                                EventDetailsScreen(
+                                  eventDetails: items[index],
+                                ));
+                          },
                         );
                       });
         },
