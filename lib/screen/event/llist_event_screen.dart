@@ -14,8 +14,9 @@ class AddRoundScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<EventBloc>().add(GetEvent());
     return Scaffold(
-      appBar: secondaryAppBar(title: "Events"),
+      appBar: primaryAppBar(title: "Events"),
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
@@ -38,9 +39,6 @@ class AddRoundScreen extends StatelessWidget {
                         return EventListTile(
                           event: items[index],
                           onTap: () {
-                            context.read<EventBloc>().add(GetEventParticipants(
-                                eventId: items[index].eventId));
-
                             pushScreen(
                                 context,
                                 EventDetailsScreen(

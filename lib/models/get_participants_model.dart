@@ -44,6 +44,8 @@ class Jury {
   String phone;
   String fname;
   String lname;
+  String username;
+  String? userId;
   String eventId;
   String role;
   String city;
@@ -59,6 +61,8 @@ class Jury {
     required this.phone,
     required this.fname,
     required this.lname,
+    required this.username,
+    required this.userId,
     required this.eventId,
     required this.role,
     required this.city,
@@ -75,6 +79,8 @@ class Jury {
         phone: json["phone"],
         fname: json["fname"],
         lname: json["lname"],
+        username: json["username"],
+        userId: json["userId"] ?? "",
         eventId: json["eventId"],
         role: json["role"],
         city: json["city"],
@@ -91,6 +97,8 @@ class Jury {
         "phone": phone,
         "fname": fname,
         "lname": lname,
+        "username": username,
+        "userId": userId,
         "eventId": eventId,
         "role": role,
         "city": city,

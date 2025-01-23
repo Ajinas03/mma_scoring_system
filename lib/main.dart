@@ -6,7 +6,7 @@ import 'package:my_app/logic/event/event_bloc.dart';
 import 'package:my_app/screen/auth/login_screen.dart';
 import 'package:my_app/screen/main/main_screen.dart';
 
-import 'config/constants/colors.dart';
+import 'config/theme_config.dart';
 import 'logic/navigation_bloc/navigation_bloc.dart';
 import 'logic/socket/socket_bloc.dart';
 
@@ -31,10 +31,14 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
             title: 'MMA Scoring',
-            theme: ThemeData(
-              primaryColor: AppColors.primary,
-              scaffoldBackgroundColor: AppColors.background,
-            ),
+            theme: AppTheme.lightTheme,
+
+            // ThemeData(
+            //   primaryColor: Colors.black,
+            //   scaffoldBackgroundColor: Colors.white,
+
+            //   //  AppColors.background,
+            // ),
             home: SharedPrefsConfig.getBool(SharedPrefsConfig.keyIsLoggedIn)
                 ? MainScreen()
                 : const LoginScreen()));

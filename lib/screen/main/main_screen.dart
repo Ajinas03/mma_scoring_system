@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_app/config/shared_prefs_config.dart';
 import 'package:my_app/logic/navigation_bloc/navigation_bloc.dart';
-import 'package:my_app/screen/home/home_screen.dart';
+import 'package:my_app/screen/event/llist_event_screen.dart';
 import 'package:my_app/screen/profile/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -30,7 +30,8 @@ class _MainScreenState extends State<MainScreen> {
     print(
         "${SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken)}tokennnnnnn");
     screens = [
-      const HomeScreen(),
+      AddRoundScreen(),
+      // const HomeScreen(),
 
       // RoundScreen(
       //   loginModel: widget.loginModel,
@@ -53,8 +54,8 @@ class _MainScreenState extends State<MainScreen> {
                 print("selected item = $i");
               },
               currentIndex: state.currentScreen,
-              unselectedItemColor: Colors.black,
-              selectedItemColor: Colors.red,
+              // unselectedItemColor: Colors.black,
+              // selectedItemColor: Colors.red,
               items: items);
         },
       ),

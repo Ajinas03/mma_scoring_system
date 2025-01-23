@@ -9,8 +9,10 @@ import 'package:my_app/screen/event/llist_event_screen.dart';
 import 'package:my_app/screen/profile/profile_widget/profile_button.dart';
 
 import '../../logic/event/event_bloc.dart';
+import '../../logic/navigation_bloc/navigation_bloc.dart';
 import 'profile_widget/logout_button.dart';
 import 'profile_widget/profile_header.dart';
+import 'profile_widget/profile_info_card.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({
@@ -31,13 +33,18 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              ProfileHeader(username: "authModel.username"),
+              ProfileHeader(
+                  username: SharedPrefsConfig.getString(
+                      SharedPrefsConfig.keyUserName)),
               const SizedBox(height: 24),
-              // ProfileInfoCard(
-              //   userId: " authModel.userId",
-              //   username: " authModel.username",
-              //   role: "authModel.role",
-              // ),
+              ProfileInfoCard(
+                userId:
+                    SharedPrefsConfig.getString(SharedPrefsConfig.keyUserId),
+                username:
+                    SharedPrefsConfig.getString(SharedPrefsConfig.keyUserName),
+                role:
+                    SharedPrefsConfig.getString(SharedPrefsConfig.keyUserRole),
+              ),
               const SizedBox(height: 32),
               ProfileListTileButton(
                   leadingIcon: Icons.calendar_month,
@@ -55,6 +62,7 @@ class ProfileScreen extends StatelessWidget {
               LogoutButton(
                 onLogout: () {
                   SharedPrefsConfig.clearAll();
+                  context.read<NavigationBloc>().add(ChangeScreen(scrnNum: 0));
                   pushReplaceScreen(context, LoginScreen());
                 },
               ),
