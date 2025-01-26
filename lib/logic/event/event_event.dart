@@ -17,6 +17,12 @@ class GetEventParticipants extends EventEvent {
   GetEventParticipants({required this.eventId});
 }
 
+class GetCompetetion extends EventEvent {
+  String eventId;
+
+  GetCompetetion({required this.eventId});
+}
+
 class CreateCompetetionEvent extends EventEvent {
   BuildContext context;
   String eventId;
@@ -25,14 +31,23 @@ class CreateCompetetionEvent extends EventEvent {
   String cornerARefereeId;
   String cornerBRefereeId;
   String cornerCRefereeId;
+  String redCornerPlayerName;
+  String blueCornerPlayerName;
+  String cornerARefereeName;
+  String cornerBRefereeName;
+  String cornerCRefereeName;
 
-  CreateCompetetionEvent({
-    required this.context,
-    required this.eventId,
-    required this.redCornerPlayerId,
-    required this.blueCornerPlayerId,
-    required this.cornerARefereeId,
-    required this.cornerBRefereeId,
-    required this.cornerCRefereeId,
-  });
+  CreateCompetetionEvent(
+      {required this.context,
+      required this.eventId,
+      required this.redCornerPlayerId,
+      required this.blueCornerPlayerId,
+      required this.cornerARefereeId,
+      required this.cornerBRefereeId,
+      required this.cornerCRefereeId,
+      required this.blueCornerPlayerName,
+      required this.cornerARefereeName,
+      required this.cornerBRefereeName,
+      required this.cornerCRefereeName,
+      required this.redCornerPlayerName});
 }

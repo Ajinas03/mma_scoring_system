@@ -4,9 +4,11 @@ class EventState {
   EventState(
       {required this.isLoading,
       required this.events,
-      this.getParicipantsModel});
+      this.getParicipantsModel,
+      this.competetionModel});
   bool isLoading;
   List<EventRespModel> events;
+  List<CompetetionModel>? competetionModel;
   GetParicipantsModel? getParicipantsModel;
 }
 

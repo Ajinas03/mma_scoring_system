@@ -8,6 +8,7 @@ import 'package:my_app/config/shared_prefs_config.dart';
 import 'package:my_app/config/toast_config.dart';
 import 'package:my_app/logic/event/event_bloc.dart';
 
+import '../models/competetion_model.dart';
 import '../models/create_event_model.dart';
 import '../models/event_resp_model.dart';
 import '../models/get_participants_model.dart';
@@ -137,7 +138,8 @@ class EventRepo {
   }
 
 // New method to create a match/bout
-  static Future<ApiResponse> createMatch({
+
+  Future<ApiResponse> createMatch({
     required BuildContext context,
     required String eventId,
     required String redCornerPlayerId,
@@ -145,6 +147,11 @@ class EventRepo {
     required String cornerARefereeId,
     required String cornerBRefereeId,
     required String cornerCRefereeId,
+    required String redCornerPlayerName,
+    required String blueCornerPlayerName,
+    required String cornerARefereeName,
+    required String cornerBRefereeName,
+    required String cornerCRefereeName,
   }) async {
     final bearerToken =
         SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
@@ -158,13 +165,28 @@ class EventRepo {
           'Authorization': 'Bearer $bearerToken',
         },
         body: jsonEncode({
-          'eventId': eventId,
-          'redCornerPlayerId': redCornerPlayerId,
-          'blueCornerPlayerId': blueCornerPlayerId,
-          'CornerARefereeId': cornerARefereeId,
-          'CornerBRefereeId': cornerBRefereeId,
-          'CornerCRefereeId': cornerCRefereeId,
-          'rounds': "3",
+          "eventId": eventId,
+          "redCornerPlayer": {
+            "id": redCornerPlayerId,
+            "name": redCornerPlayerName
+          },
+          "blueCornerPlayer": {
+            "id": blueCornerPlayerId,
+            "name": blueCornerPlayerName
+          },
+          "CornerAReferee": {
+            "id": cornerARefereeId,
+            "name": cornerARefereeName
+          },
+          "CornerBReferee": {
+            "id": cornerBRefereeId,
+            "name": cornerBRefereeName
+          },
+          "CornerCReferee": {
+            "id": cornerCRefereeId,
+            "name": cornerCRefereeName
+          },
+          "rounds": 3
         }),
       );
 
@@ -196,6 +218,31 @@ class EventRepo {
         success: false,
         message: 'Error creating match: ${e.toString()}',
       );
+    }
+  }
+
+  static Future<List<CompetetionModel>> getCompetitionDetails(
+      String eventId) async {
+    final bearerToken =
+        SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/api/v1.0/competition-details?eventId=$eventId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $bearerToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return competetionModelFromJson(response.body);
+      } else {
+        print("get competition details error : ${response.body}");
+        return [];
+      }
+    } catch (e) {
+      print("get competition details error : $e");
+      return [];
     }
   }
 }

@@ -81,7 +81,11 @@ class EventDetailsScreen extends StatelessWidget {
                 leadingIcon: Icons.wine_bar,
                 title: "Competetion",
                 onTap: () {
-                  pushScreen(context, CompetetionScreen());
+                  pushScreen(
+                      context,
+                      CompetetionScreen(
+                        eventId: eventDetails?.eventId ?? "",
+                      ));
                 }),
           ],
         ),

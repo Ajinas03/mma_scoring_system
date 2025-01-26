@@ -19,6 +19,12 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
   String? cornerARefereeId;
   String? cornerBRefereeId;
   String? cornerCRefereeId;
+
+  String? redCornerPlayerName;
+  String? blueCornerPlayerName;
+  String? cornerARefereeName;
+  String? cornerBRefereeName;
+  String? cornerCRefereeName;
   String? errorMessage;
 
   bool validateForm() {
@@ -59,6 +65,11 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
           cornerARefereeId: cornerARefereeId ?? "",
           cornerBRefereeId: cornerBRefereeId ?? "",
           cornerCRefereeId: cornerCRefereeId ?? "",
+          blueCornerPlayerName: blueCornerPlayerName ?? "",
+          cornerBRefereeName: cornerBRefereeName ?? "",
+          cornerCRefereeName: cornerCRefereeName ?? "",
+          redCornerPlayerName: redCornerPlayerName ?? "",
+          cornerARefereeName: cornerARefereeName ?? "",
         ));
 
     // TODO: Send competition data to your API
@@ -137,6 +148,7 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
                               (p) => _getUsername(p) == value,
                             );
                             redCornerPlayerId = player.userId;
+                            redCornerPlayerName = player.username;
                           }
                           errorMessage = null;
                         }),
@@ -165,6 +177,7 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
                               (p) => _getUsername(p) == value,
                             );
                             blueCornerPlayerId = player.userId;
+                            blueCornerPlayerName = player.username;
                           }
                           errorMessage = null;
                         }),
@@ -186,6 +199,7 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
                         (r) => _getUsername(r) == value,
                       );
                       cornerARefereeId = referee.userId;
+                      cornerARefereeName = referee.username;
                     }
                     errorMessage = null;
                   }),
@@ -203,6 +217,7 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
                         (r) => _getUsername(r) == value,
                       );
                       cornerBRefereeId = referee.userId;
+                      cornerBRefereeName = referee.username;
                     }
                     errorMessage = null;
                   }),
@@ -220,6 +235,7 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
                         (r) => _getUsername(r) == value,
                       );
                       cornerCRefereeId = referee.userId;
+                      cornerCRefereeName = referee.username;
                     }
                     errorMessage = null;
                   }),

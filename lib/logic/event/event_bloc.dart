@@ -5,6 +5,7 @@ import 'package:my_app/models/create_event_model.dart';
 import 'package:my_app/models/get_participants_model.dart';
 import 'package:my_app/repo/event_repo.dart';
 
+import '../../models/competetion_model.dart';
 import '../../models/event_resp_model.dart';
 
 part 'event_event.dart';
@@ -45,15 +46,37 @@ class EventBloc extends Bloc<EventEvent, EventState> {
       }
 
       if (event is CreateCompetetionEvent) {
-        final response = await EventRepo.createMatch(
-            context: event.context,
-            eventId: event.eventId,
-            redCornerPlayerId: event.redCornerPlayerId,
-            blueCornerPlayerId: event.blueCornerPlayerId,
-            cornerARefereeId: event.cornerARefereeId,
-            cornerBRefereeId: event.cornerBRefereeId,
-            cornerCRefereeId: event.cornerCRefereeId);
+        final response = await EventRepo().createMatch(
+          context: event.context,
+          eventId: event.eventId,
+          redCornerPlayerId: event.redCornerPlayerId,
+          blueCornerPlayerId: event.blueCornerPlayerId,
+          cornerARefereeId: event.cornerARefereeId,
+          cornerBRefereeId: event.cornerBRefereeId,
+          cornerCRefereeId: event.cornerCRefereeId,
+          blueCornerPlayerName: event.blueCornerPlayerName,
+          cornerBRefereeName: event.cornerBRefereeName,
+          cornerCRefereeName: event.cornerCRefereeId,
+          redCornerPlayerName: event.redCornerPlayerName,
+          cornerARefereeName: event.cornerARefereeName,
+        );
         print(response);
+      }
+
+      if (event is GetCompetetion) {
+        emit(EventState(
+            isLoading: true,
+            events: state.events,
+            getParicipantsModel: state.getParicipantsModel));
+
+        final competetionModel =
+            await EventRepo.getCompetitionDetails(event.eventId);
+
+        emit(EventState(
+            isLoading: false,
+            events: state.events,
+            getParicipantsModel: state.getParicipantsModel,
+            competetionModel: competetionModel));
       }
     });
   }
