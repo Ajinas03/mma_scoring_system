@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:my_app/logic/auth/auth_bloc.dart';
+import 'package:my_app/screen/auth/widget/custom_dropdown_widget.dart';
 import 'package:my_app/screen/common/app_bar_widgets.dart';
 import 'package:my_app/screen/common/text_widget.dart';
 
 import '../auth/widget/custom_indput_widget.dart';
+import '../common/city_search_dropdown.dart';
 
 class CreateParticipantScreen extends StatefulWidget {
   final String role;
@@ -106,6 +108,7 @@ class _CreateParticipantScreenState extends State<CreateParticipantScreen> {
     }
   }
 
+  final _gender = ["Male", "Female"];
   @override
   void initState() {
     super.initState();
@@ -125,6 +128,32 @@ class _CreateParticipantScreenState extends State<CreateParticipantScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    return state.isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : CustomInputField(
+                            label: 'Phone',
+                            value: _formData['phone'],
+                            keyboardType: TextInputType.phone,
+                            onChanged: (value) {
+                              if (value.length == 10) {
+                                context.read<AuthBloc>().add(
+                                    CheckUserExistEvent(
+                                        eventId: widget.eventId,
+                                        role: widget.role,
+                                        phoneNum: value,
+                                        context: context));
+
+                                setState(() => _formData['phone'] = value);
+                              }
+                            },
+                            validator: (value) => value?.isEmpty ?? true
+                                ? 'Please enter phone number'
+                                : null,
+                          );
+                  },
+                ),
                 CustomInputField(
                   label: 'First Name',
                   value: _formData['fname'],
@@ -157,24 +186,23 @@ class _CreateParticipantScreenState extends State<CreateParticipantScreen> {
                     return null;
                   },
                 ),
-                CustomInputField(
-                  label: 'Phone',
-                  value: _formData['phone'],
-                  keyboardType: TextInputType.phone,
-                  onChanged: (value) =>
-                      setState(() => _formData['phone'] = value),
-                  validator: (value) => value?.isEmpty ?? true
-                      ? 'Please enter phone number'
-                      : null,
-                ),
+
                 if (_isPlayerRole) ...[
-                  CustomInputField(
-                    label: 'Gender',
+                  // CustomInputField(
+                  //   label: 'Gender',
+                  //   value: _formData['gender'],
+                  //   onChanged: (value) =>
+                  //       setState(() => _formData['gender'] = value),
+                  //   validator: (value) =>
+                  //       value?.isEmpty ?? true ? 'Please enter gender' : null,
+                  // ),
+
+                  CustomDropdown(
+                    label: 'Select Gender',
                     value: _formData['gender'],
+                    items: _gender,
                     onChanged: (value) =>
-                        setState(() => _formData['gender'] = value),
-                    validator: (value) =>
-                        value?.isEmpty ?? true ? 'Please enter gender' : null,
+                        setState(() => _formData['gender'] = value ?? ''),
                   ),
 
                   // Date of Birth Picker
@@ -226,39 +254,53 @@ class _CreateParticipantScreenState extends State<CreateParticipantScreen> {
                     },
                   ),
                 ],
-                CustomInputField(
-                  label: 'City',
-                  value: _formData['city'],
-                  onChanged: (value) =>
-                      setState(() => _formData['city'] = value),
-                  validator: (value) =>
-                      value?.isEmpty ?? true ? 'Please enter city' : null,
+                CitySearchDropdown(
+                  onCitySelected: (selectedCity) {
+                    // Handle selected city, e.g., save to state or navigate
+                    print(
+                        'Selected: ${selectedCity.city}, ${selectedCity.state}');
+
+                    setState(() {
+                      _formData['city'] = selectedCity.city;
+                      _formData['state'] = selectedCity.state;
+                      _formData['country'] = selectedCity.country;
+                      _formData['zipcode'] = "5454";
+                    });
+                  },
                 ),
-                CustomInputField(
-                  label: 'State',
-                  value: _formData['state'],
-                  onChanged: (value) =>
-                      setState(() => _formData['state'] = value),
-                  validator: (value) =>
-                      value?.isEmpty ?? true ? 'Please enter state' : null,
-                ),
-                CustomInputField(
-                  label: 'Country',
-                  value: _formData['country'],
-                  onChanged: (value) =>
-                      setState(() => _formData['country'] = value),
-                  validator: (value) =>
-                      value?.isEmpty ?? true ? 'Please enter country' : null,
-                ),
-                CustomInputField(
-                  label: 'Zipcode',
-                  value: _formData['zipcode'],
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) =>
-                      setState(() => _formData['zipcode'] = value),
-                  validator: (value) =>
-                      value?.isEmpty ?? true ? 'Please enter zipcode' : null,
-                ),
+                // CustomInputField(
+                //   label: 'City',
+                //   value: _formData['city'],
+                //   onChanged: (value) =>
+                //       setState(() => _formData['city'] = value),
+                //   validator: (value) =>
+                //       value?.isEmpty ?? true ? 'Please enter city' : null,
+                // ),
+                // CustomInputField(
+                //   label: 'State',
+                //   value: _formData['state'],
+                //   onChanged: (value) =>
+                //       setState(() => _formData['state'] = value),
+                //   validator: (value) =>
+                //       value?.isEmpty ?? true ? 'Please enter state' : null,
+                // ),
+                // CustomInputField(
+                //   label: 'Country',
+                //   value: _formData['country'],
+                //   onChanged: (value) =>
+                //       setState(() => _formData['country'] = value),
+                //   validator: (value) =>
+                //       value?.isEmpty ?? true ? 'Please enter country' : null,
+                // ),
+                // CustomInputField(
+                //   label: 'Zipcode',
+                //   value: _formData['zipcode'],
+                //   keyboardType: TextInputType.number,
+                //   onChanged: (value) =>
+                //       setState(() => _formData['zipcode'] = value),
+                //   validator: (value) =>
+                //       value?.isEmpty ?? true ? 'Please enter zipcode' : null,
+                // ),
                 const SizedBox(height: 24),
                 BlocBuilder<AuthBloc, AuthState>(
                   builder: (context, state) {

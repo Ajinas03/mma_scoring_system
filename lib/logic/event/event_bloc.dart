@@ -43,6 +43,18 @@ class EventBloc extends Bloc<EventEvent, EventState> {
             events: state.events,
             getParicipantsModel: getParticipants));
       }
+
+      if (event is CreateCompetetionEvent) {
+        final response = await EventRepo.createMatch(
+            context: event.context,
+            eventId: event.eventId,
+            redCornerPlayerId: event.redCornerPlayerId,
+            blueCornerPlayerId: event.blueCornerPlayerId,
+            cornerARefereeId: event.cornerARefereeId,
+            cornerBRefereeId: event.cornerBRefereeId,
+            cornerCRefereeId: event.cornerCRefereeId);
+        print(response);
+      }
     });
   }
 }

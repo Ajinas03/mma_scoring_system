@@ -10,6 +10,18 @@ class LoginEvent extends AuthEvent {
   String password;
 }
 
+class CheckUserExistEvent extends AuthEvent {
+  CheckUserExistEvent(
+      {required this.phoneNum,
+      required this.context,
+      required this.role,
+      required this.eventId});
+  BuildContext context;
+  String phoneNum;
+  String eventId;
+  String role;
+}
+
 class SignupEvent extends AuthEvent {
   SignupEvent(
       {required this.fname,

@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:my_app/config/constants/api_constants.dart';
 
 import '../config/shared_prefs_config.dart';
+import '../models/user_exist_model.dart';
 
 class AuthRepository {
   final String baseUrl = ApiConstants.baseUrl;
@@ -23,7 +24,7 @@ class AuthRepository {
           'Accept': 'application/json',
         },
         body: jsonEncode({
-          'phone': phone,
+          'phone': "91$phone",
           'password': password,
         }),
       );
@@ -60,7 +61,7 @@ class AuthRepository {
       'fname': fName, // First name
       'lname': lName, // Last name
       'email': email, // Email address
-      'phone': phone, // Phone number
+      'phone': "91$phone", // Phone number
       'role': role, // Role
       'password': passsword, // Password
       'city': city, // City
@@ -116,7 +117,7 @@ class AuthRepository {
       'fname': fName, // First name
       'lname': lName, // Last name
       'email': email, // Email address
-      'phone': phone, // Phone number
+      'phone': "91$phone", // Phone number
       'role': role, // Role
       'city': city, // City
       'state': state, // State
@@ -154,6 +155,81 @@ class AuthRepository {
     } catch (e) {
       // Handle any errors during the request
       print('Create participant   Error making the request: $e');
+      return false;
+    }
+  }
+
+  Future<UserExistModel?> checkUserExist({
+    required String phone,
+  }) async {
+    final url = Uri.parse("$baseUrl${ApiConstants.checkUserExist}91$phone");
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return UserExistModel.fromJson(jsonDecode(response.body));
+      } else {
+        // For error responses, print the error and return null
+        print(
+            'Check User Exist Error: ${response.statusCode}, ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('HTTP Error in checkUserExist: $e');
+      return null;
+    }
+  }
+
+  Future<bool> addParticipantToEvent({
+    required String userId,
+    required String eventId,
+    required String phone,
+    required String fname,
+    required String lname,
+    required String role,
+  }) async {
+    final url = Uri.parse(baseUrl + ApiConstants.addParticipantToEvent);
+
+    final bodyData = {
+      'userId': userId,
+      'eventId': eventId,
+      'phone': "91$phone",
+      'fname': fname,
+      'lname': lname,
+      'role': role,
+    };
+
+    try {
+      final bearerToken =
+          SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $bearerToken',
+        },
+        body: jsonEncode(bodyData),
+      );
+
+      if (response.statusCode == 200) {
+        print('Add Participant to Event Success: ${response.body}');
+        return true;
+      } else {
+        print(
+          'Add Participant to Event Error: ${response.statusCode}, ${response.body}  body : $bodyData , url : $url',
+        );
+        return false;
+      }
+    } catch (e) {
+      print('Add Participant to Event Request Error: $e');
       return false;
     }
   }

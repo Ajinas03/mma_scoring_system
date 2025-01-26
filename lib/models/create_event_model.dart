@@ -7,17 +7,18 @@ class CreateEventRequest {
   final String state;
   final String country;
   final String zipcode;
+  final String role;
 
-  CreateEventRequest({
-    required this.name,
-    required this.category,
-    required this.date,
-    required this.city,
-    required this.address,
-    required this.state,
-    required this.country,
-    required this.zipcode,
-  });
+  CreateEventRequest(
+      {required this.name,
+      required this.category,
+      required this.date,
+      required this.city,
+      required this.address,
+      required this.state,
+      required this.country,
+      required this.zipcode,
+      required this.role});
 
   Map<String, dynamic> toJson() {
     return {
@@ -29,6 +30,7 @@ class CreateEventRequest {
       'state': state,
       'country': country,
       'zipcode': zipcode,
+      'role': role,
     };
   }
 }

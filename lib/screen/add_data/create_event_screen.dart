@@ -2,8 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:my_app/config/shared_prefs_config.dart';
 import 'package:my_app/logic/event/event_bloc.dart';
 import 'package:my_app/models/create_event_model.dart';
+import 'package:my_app/screen/auth/widget/custom_dropdown_widget.dart';
+
+import '../common/city_search_dropdown.dart';
 
 class CreateRoundScreen extends StatefulWidget {
   const CreateRoundScreen({super.key});
@@ -48,6 +52,8 @@ class _CreateRoundScreenState extends State<CreateRoundScreen> {
     }
   }
 
+  final catergories = ["Kick Boxing"];
+
   void _submitForm() {
     if (_formKey.currentState!.validate() && _selectedDate != null) {
       final eventData = {
@@ -64,6 +70,7 @@ class _CreateRoundScreenState extends State<CreateRoundScreen> {
       context.read<EventBloc>().add(CreateEvent(
           context: context,
           createEventRequest: CreateEventRequest(
+            role: SharedPrefsConfig.getString(SharedPrefsConfig.keyUserRole),
             name: _nameController.text,
             category: _categoryController.text,
             date: _selectedDate ?? DateTime.now(),
@@ -93,6 +100,7 @@ class _CreateRoundScreenState extends State<CreateRoundScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _categoryController.text = catergories[0];
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Event'),
@@ -113,45 +121,72 @@ class _CreateRoundScreenState extends State<CreateRoundScreen> {
                 hint: 'Enter event name',
               ),
               const SizedBox(height: 16),
-              _buildTextField(
-                controller: _categoryController,
-                label: 'Category',
-                hint: 'Enter event category',
+              // _buildTextField(
+              //   controller: _categoryController,
+              //   label: 'Category',
+              //   hint: 'Enter event category',
+              // ),
+              CustomDropdown(
+                label: 'Select Category',
+                value: _categoryController.text,
+                items: catergories,
+                onChanged: (value) =>
+                    setState(() => _categoryController.text = value ?? ''),
               ),
+
               const SizedBox(height: 16),
               _buildDatePicker(),
               const SizedBox(height: 16),
-              _buildTextField(
-                controller: _cityController,
-                label: 'City',
-                hint: 'Enter city',
+              CitySearchDropdown(
+                onCitySelected: (selectedCity) {
+                  // Handle selected city, e.g., save to state or navigate
+                  print(
+                      'Selected: ${selectedCity.city}, ${selectedCity.state}');
+
+                  setState(() {
+                    _cityController.text = selectedCity.city;
+                    _stateController.text = selectedCity.state;
+                    _countryController.text = selectedCity.country;
+                    _zipcodeController.text = "5454";
+
+                    _addressController.text =
+                        "${selectedCity.city}${selectedCity.state}${selectedCity.country}5454";
+                  });
+                },
               ),
-              const SizedBox(height: 16),
-              _buildTextField(
-                controller: _addressController,
-                label: 'Address',
-                hint: 'Enter address',
-                maxLines: 2,
-              ),
-              const SizedBox(height: 16),
-              _buildTextField(
-                controller: _stateController,
-                label: 'State',
-                hint: 'Enter state',
-              ),
-              const SizedBox(height: 16),
-              _buildTextField(
-                controller: _countryController,
-                label: 'Country',
-                hint: 'Enter country',
-              ),
-              const SizedBox(height: 16),
-              _buildTextField(
-                controller: _zipcodeController,
-                label: 'Zipcode',
-                hint: 'Enter zipcode',
-                keyboardType: TextInputType.number,
-              ),
+              // _buildTextField(
+              //   controller: _cityController,
+              //   label: 'City',
+              //   hint: 'Enter city',
+              // ),
+              // const SizedBox(height: 16),
+
+              // _buildTextField(
+              //   controller: _addressController,
+              //   label: 'Address',
+              //   hint: 'Enter address',
+              //   maxLines: 2,
+              // ),
+
+              // const SizedBox(height: 16),
+              // _buildTextField(
+              //   controller: _stateController,
+              //   label: 'State',
+              //   hint: 'Enter state',
+              // ),
+              // const SizedBox(height: 16),
+              // _buildTextField(
+              //   controller: _countryController,
+              //   label: 'Country',
+              //   hint: 'Enter country',
+              // ),
+              // const SizedBox(height: 16),
+              // _buildTextField(
+              //   controller: _zipcodeController,
+              //   label: 'Zipcode',
+              //   hint: 'Enter zipcode',
+              //   keyboardType: TextInputType.number,
+              // ),
               const SizedBox(height: 24),
               BlocBuilder<EventBloc, EventState>(
                 builder: (context, state) {

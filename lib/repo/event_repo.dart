@@ -36,7 +36,7 @@ class EventRepo {
       // Parse response
       final responseData = jsonDecode(response.body);
 
-      if (response.statusCode != 201) {
+      if (response.statusCode != 201 || response.statusCode != 200) {
         ToastConfig.showSuccess(
             context, responseData['message'] ?? 'Failed to create event');
 
@@ -80,12 +80,14 @@ class EventRepo {
       } else {
         final errorMessage =
             json.decode(response.body)['message'] ?? 'Failed to fetch events';
-        print("get event error : $errorMessage");
+        print("get event error : $errorMessage   $response");
         return [];
       }
     } on FormatException {
       return [];
     } catch (e) {
+      print("get event error  exception : $e  ");
+
       return [];
     }
   }
@@ -130,6 +132,69 @@ class EventRepo {
         players: [],
         jury: [],
         referees: [],
+      );
+    }
+  }
+
+// New method to create a match/bout
+  static Future<ApiResponse> createMatch({
+    required BuildContext context,
+    required String eventId,
+    required String redCornerPlayerId,
+    required String blueCornerPlayerId,
+    required String cornerARefereeId,
+    required String cornerBRefereeId,
+    required String cornerCRefereeId,
+  }) async {
+    final bearerToken =
+        SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
+    final key = "comptetion create";
+    try {
+      final response = await http.post(
+        Uri.parse(
+            '$baseUrl${ApiConstants.createMatch}'), // Add createMatch endpoint in ApiConstants
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $bearerToken',
+        },
+        body: jsonEncode({
+          'eventId': eventId,
+          'redCornerPlayerId': redCornerPlayerId,
+          'blueCornerPlayerId': blueCornerPlayerId,
+          'CornerARefereeId': cornerARefereeId,
+          'CornerBRefereeId': cornerBRefereeId,
+          'CornerCRefereeId': cornerCRefereeId,
+          'rounds': "3",
+        }),
+      );
+
+      final responseData = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        ToastConfig.showSuccess(context, 'Match created successfully');
+
+        print("$key created successfully ");
+        return ApiResponse(
+          success: true,
+          message: 'Match created successfully',
+          data: responseData,
+        );
+      } else {
+        ToastConfig.showError(
+            context, responseData['message'] ?? 'Failed to create match');
+        print("$key create failed " + responseData['message']);
+
+        return ApiResponse(
+          success: false,
+          message: responseData['message'] ?? 'Failed to create match',
+        );
+      }
+    } catch (e) {
+      print("$key create error exception $e ");
+      ToastConfig.showError(context, 'Error creating match: ${e.toString()}');
+      return ApiResponse(
+        success: false,
+        message: 'Error creating match: ${e.toString()}',
       );
     }
   }

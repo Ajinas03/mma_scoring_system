@@ -4,6 +4,7 @@ import 'package:my_app/logic/auth/auth_bloc.dart';
 import 'package:my_app/screen/auth/widget/custom_dropdown_widget.dart';
 import 'package:my_app/screen/common/text_widget.dart';
 
+import '../common/city_search_dropdown.dart';
 import 'widget/custom_indput_widget.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -129,31 +130,47 @@ class _SignupScreenState extends State<SignupScreen> {
                     return null;
                   },
                 ),
-                CustomInputField(
-                  label: 'City',
-                  value: _formData['city'],
-                  onChanged: (value) =>
-                      setState(() => _formData['city'] = value),
+
+                CitySearchDropdown(
+                  onCitySelected: (selectedCity) {
+                    // Handle selected city, e.g., save to state or navigate
+                    print(
+                        'Selected: ${selectedCity.city}, ${selectedCity.state}');
+
+                    setState(() {
+                      _formData['city'] = selectedCity.city;
+                      _formData['state'] = selectedCity.state;
+                      _formData['country'] = selectedCity.country;
+                      _formData['zipcode'] = "5454";
+                    });
+                  },
                 ),
-                CustomInputField(
-                  label: 'State',
-                  value: _formData['state'],
-                  onChanged: (value) =>
-                      setState(() => _formData['state'] = value),
-                ),
-                CustomInputField(
-                  label: 'Country',
-                  value: _formData['country'],
-                  onChanged: (value) =>
-                      setState(() => _formData['country'] = value),
-                ),
-                CustomInputField(
-                  label: 'Zipcode',
-                  value: _formData['zipcode'],
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) =>
-                      setState(() => _formData['zipcode'] = value),
-                ),
+
+                // CustomInputField(
+                //   label: 'City',
+                //   value: _formData['city'],
+                //   onChanged: (value) =>
+                //       setState(() => _formData['city'] = value),
+                // ),
+                // CustomInputField(
+                //   label: 'State',
+                //   value: _formData['state'],
+                //   onChanged: (value) =>
+                //       setState(() => _formData['state'] = value),
+                // ),
+                // CustomInputField(
+                //   label: 'Country',
+                //   value: _formData['country'],
+                //   onChanged: (value) =>
+                //       setState(() => _formData['country'] = value),
+                // ),
+                // CustomInputField(
+                //   label: 'Zipcode',
+                //   value: _formData['zipcode'],
+                //   keyboardType: TextInputType.number,
+                //   onChanged: (value) =>
+                //       setState(() => _formData['zipcode'] = value),
+                // ),
                 const SizedBox(height: 24),
                 BlocBuilder<AuthBloc, AuthState>(
                   builder: (context, state) {

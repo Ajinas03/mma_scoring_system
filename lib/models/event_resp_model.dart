@@ -33,7 +33,7 @@ class EventRespModel {
   });
 
   factory EventRespModel.fromJson(Map<String, dynamic> json) => EventRespModel(
-        eventId: json["event_id"],
+        eventId: json["eventId"],
         name: json["name"],
         category: json["category"],
         date: DateTime.parse(json["date"]),
@@ -44,7 +44,7 @@ class EventRespModel {
       );
 
   Map<String, dynamic> toJson() => {
-        "event_id": eventId,
+        "eventId": eventId,
         "name": name,
         "category": category,
         "date": date.toIso8601String(),

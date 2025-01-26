@@ -51,6 +51,16 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
       'CornerCRefereeId': cornerCRefereeId,
     };
 
+    context.read<EventBloc>().add(CreateCompetetionEvent(
+          context: context,
+          eventId: eventId,
+          redCornerPlayerId: redCornerPlayerId ?? "",
+          blueCornerPlayerId: blueCornerPlayerId ?? "",
+          cornerARefereeId: cornerARefereeId ?? "",
+          cornerBRefereeId: cornerBRefereeId ?? "",
+          cornerCRefereeId: cornerCRefereeId ?? "",
+        ));
+
     // TODO: Send competition data to your API
     print('Competition created: $competition');
   }

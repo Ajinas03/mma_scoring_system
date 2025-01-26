@@ -5,9 +5,11 @@ import 'package:my_app/config/shared_prefs_config.dart';
 import 'package:my_app/config/toast_config.dart';
 import 'package:my_app/logic/event/event_bloc.dart';
 import 'package:my_app/models/auth_model.dart';
+import 'package:my_app/models/user_exist_model.dart';
 import 'package:my_app/screen/main/main_screen.dart';
 
 import '../../repo/auth_repo.dart';
+import '../../utils/user_existence_check_utitlity.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -153,6 +155,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthState(isLoading: false, signUpError: e.toString()));
           print("create participant failed: $e");
         }
+      }
+
+      if (event is CheckUserExistEvent) {
+        emit(AuthState(isLoading: true));
+
+        final userExistModel =
+            await authRepo.checkUserExist(phone: event.phoneNum);
+
+        if (userExistModel != null) {
+          checkUserAndNavigate(
+              context: event.context,
+              phone: event.phoneNum,
+              existingUser: userExistModel,
+              role: event.role,
+              eventId: event.eventId);
+        }
+
+        emit(AuthState(isLoading: false, userExistModel: userExistModel));
       }
     });
   }

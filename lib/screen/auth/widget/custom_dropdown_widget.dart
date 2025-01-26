@@ -29,9 +29,9 @@ class CustomDropdown extends StatelessWidget {
               const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         ),
         items: [
-          const DropdownMenuItem<String>(
+          DropdownMenuItem<String>(
             value: null,
-            child: Text('Select a role'),
+            child: Text(label),
           ),
           ...items.map((String item) {
             return DropdownMenuItem<String>(

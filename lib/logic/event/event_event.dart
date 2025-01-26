@@ -16,3 +16,23 @@ class GetEventParticipants extends EventEvent {
 
   GetEventParticipants({required this.eventId});
 }
+
+class CreateCompetetionEvent extends EventEvent {
+  BuildContext context;
+  String eventId;
+  String redCornerPlayerId;
+  String blueCornerPlayerId;
+  String cornerARefereeId;
+  String cornerBRefereeId;
+  String cornerCRefereeId;
+
+  CreateCompetetionEvent({
+    required this.context,
+    required this.eventId,
+    required this.redCornerPlayerId,
+    required this.blueCornerPlayerId,
+    required this.cornerARefereeId,
+    required this.cornerBRefereeId,
+    required this.cornerCRefereeId,
+  });
+}

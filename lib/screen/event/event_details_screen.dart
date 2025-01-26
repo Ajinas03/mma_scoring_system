@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_app/config/screen_config.dart';
-import 'package:my_app/screen/add_data/create_participants_screen.dart.dart';
 import 'package:my_app/screen/competetion/competetion_screen.dart';
-import 'package:my_app/screen/event/widget/participant_display.dart';
+import 'package:my_app/screen/event/jury_screen.dart';
+import 'package:my_app/screen/event/players_screen.dart';
+import 'package:my_app/screen/event/referee_screen.dart';
 
-import '../../logic/event/event_bloc.dart';
 import '../../models/event_resp_model.dart';
 import '../profile/profile_widget/profile_button.dart';
 import 'widget/event_header.dart';
@@ -22,9 +21,7 @@ class EventDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context
-        .read<EventBloc>()
-        .add(GetEventParticipants(eventId: eventDetails?.eventId ?? ""));
+    final eventId = eventDetails?.eventId ?? "";
 
     print("event id ===========  ${eventDetails?.eventId}");
     return Scaffold(
@@ -50,46 +47,39 @@ class EventDetailsScreen extends StatelessWidget {
               country: eventDetails?.category ?? '',
               zipcode: eventDetails?.zipcode ?? '',
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ParticipantDisplay(eventId: eventDetails?.eventId ?? ""),
-            ),
             ProfileListTileButton(
-                leadingIcon: Icons.group_add_outlined,
-                title: "Add Players",
+                leadingIcon: Icons.group_outlined,
+                title: "Players",
                 onTap: () {
                   pushScreen(
                       context,
-                      CreateParticipantScreen(
-                        role: 'player',
-                        eventId: eventDetails?.eventId ?? "",
+                      PlayersScreen(
+                        eventId: eventId,
                       ));
                 }),
             ProfileListTileButton(
-                leadingIcon: Icons.group_add_outlined,
-                title: "Add Jury",
+                leadingIcon: Icons.group_outlined,
+                title: "Jury",
                 onTap: () {
                   pushScreen(
                       context,
-                      CreateParticipantScreen(
-                        eventId: eventDetails?.eventId ?? "",
-                        role: 'jury',
+                      JuryScreen(
+                        eventId: eventId,
                       ));
                 }),
             ProfileListTileButton(
-                leadingIcon: Icons.group_add_outlined,
-                title: "Add Referee",
+                leadingIcon: Icons.group_outlined,
+                title: "Referee",
                 onTap: () {
                   pushScreen(
                       context,
-                      CreateParticipantScreen(
-                        eventId: eventDetails?.eventId ?? "",
-                        role: 'referee',
+                      RefereeScreen(
+                        eventId: eventId,
                       ));
                 }),
             ProfileListTileButton(
                 leadingIcon: Icons.wine_bar,
-                title: "Coompetetion",
+                title: "Competetion",
                 onTap: () {
                   pushScreen(context, CompetetionScreen());
                 }),
