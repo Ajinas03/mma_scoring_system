@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_app/config/screen_config.dart';
 import 'package:my_app/screen/common/app_bar_widgets.dart';
 import 'package:my_app/screen/competetion/create_competetion_screen.dart';
+import 'package:my_app/screen/round/round_screen.dart';
 
 import '../../logic/event/event_bloc.dart';
 import 'competetion_widgets/competition_card.dart';
@@ -38,8 +39,14 @@ class CompetetionScreen extends StatelessWidget {
                       padding: EdgeInsets.all(16),
                       itemCount: competitions?.length,
                       itemBuilder: (context, index) {
-                        return CompetitionCard(
-                            competition: competitions?[index]);
+                        return InkWell(
+                          onTap: () {
+                            pushScreen(context,
+                                RoundScreen(competition: competitions?[index]));
+                          },
+                          child: CompetitionCard(
+                              competition: competitions?[index]),
+                        );
                       },
                     );
         },

@@ -56,7 +56,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
           cornerCRefereeId: event.cornerCRefereeId,
           blueCornerPlayerName: event.blueCornerPlayerName,
           cornerBRefereeName: event.cornerBRefereeName,
-          cornerCRefereeName: event.cornerCRefereeId,
+          cornerCRefereeName: event.cornerCRefereeName,
           redCornerPlayerName: event.redCornerPlayerName,
           cornerARefereeName: event.cornerARefereeName,
         );

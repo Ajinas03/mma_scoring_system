@@ -5,10 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_app/config/screen_config.dart';
 import 'package:my_app/config/shared_prefs_config.dart';
 import 'package:my_app/screen/auth/login_screen.dart';
-import 'package:my_app/screen/event/llist_event_screen.dart';
-import 'package:my_app/screen/profile/profile_widget/profile_button.dart';
 
-import '../../logic/event/event_bloc.dart';
 import '../../logic/navigation_bloc/navigation_bloc.dart';
 import 'profile_widget/logout_button.dart';
 import 'profile_widget/profile_header.dart';
@@ -46,19 +43,6 @@ class ProfileScreen extends StatelessWidget {
                     SharedPrefsConfig.getString(SharedPrefsConfig.keyUserRole),
               ),
               const SizedBox(height: 32),
-              ProfileListTileButton(
-                  leadingIcon: Icons.calendar_month,
-                  title: "Events",
-                  onTap: () {
-                    context.read<EventBloc>().add(GetEvent());
-                    pushScreen(context, AddRoundScreen());
-                  }),
-              ProfileListTileButton(
-                  leadingIcon: Icons.group_add_outlined,
-                  title: "Fighter",
-                  onTap: () {
-                    pushScreen(context, AddRoundScreen());
-                  }),
               LogoutButton(
                 onLogout: () {
                   SharedPrefsConfig.clearAll();

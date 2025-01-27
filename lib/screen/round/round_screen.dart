@@ -1,69 +1,76 @@
+// lib/screens/round_screen/round_screen.dart
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:my_app/config/screen_config.dart';
-import 'package:my_app/models/login_model.dart';
 import 'package:my_app/screen/common/app_bar_widgets.dart';
-import 'package:my_app/screen/common/text_widget.dart';
-import 'package:my_app/screen/round/round_details_screen.dart';
-import 'package:my_app/screen/round/round_details_screen_admin.dart';
+import 'package:my_app/screen/round/widgets/referee_info_widget.dart';
+
+import '../../models/competetion_model.dart';
+import 'widgets/player_info_card.dart';
+import 'widgets/round_card.dart';
 
 class RoundScreen extends StatelessWidget {
-  final LoginModel? loginModel;
-  const RoundScreen({super.key, required this.loginModel});
+  final CompetetionModel? competition;
+
+  const RoundScreen({super.key, required this.competition});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: SizedBox(
-        height: 40,
-        child: FloatingActionButton.extended(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            onPressed: () {},
-            label: const Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(Icons.add),
-                SizedBox(
-                  width: 10,
-                ),
-                TextWidget(text: "Add Event"),
-              ],
-            )),
-      ),
-      appBar: primaryAppBar(title: "Events"),
-      body: ListView.builder(
-          physics: const BouncingScrollPhysics(),
-          itemCount: 8,
-          itemBuilder: (context, index) {
-            return ListTile(
-              onTap: () {
-                pushScreen(
-                    context,
-                    index.isEven
-                        ? RoundDetailsScreen(
-                            loginModel: loginModel,
-                          )
-                        : const RoundDetailsScreenAdmin());
-              },
-              title: const TextWidget(text: "Event Name"),
-              subtitle: TextWidget(
-                  text: DateFormat('dd MMM, yyyy').format(DateTime.now())),
-              trailing: Column(
-                mainAxisSize: MainAxisSize.min,
+      appBar: secondaryAppBar(title: "Competition Rounds"),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
                 children: [
-                  Icon(
-                    Icons.circle_rounded,
-                    size: 12,
-                    color: index != 0 ? null : Colors.green,
+                  Expanded(
+                    child: PlayerInfoCard(
+                      player: competition?.redCornerPlayer,
+                      cornerColor: Colors.red,
+                      isRedCorner: true,
+                    ),
                   ),
-                  const SizedBox(),
-                  TextWidget(text: index != 0 ? "Inactive" : "Active")
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: PlayerInfoCard(
+                      player: competition?.blueCornerPlayer,
+                      cornerColor: Colors.blue,
+                      isRedCorner: false,
+                    ),
+                  ),
                 ],
               ),
-            );
-          }),
+              const SizedBox(height: 24),
+              RefereeInfoWidget(
+                cornerAReferee: competition?.cornerAReferee,
+                cornerBReferee: competition?.cornerBReferee,
+                cornerCReferee: competition?.cornerCReferee,
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Rounds',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 16),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: competition?.roundsDetails.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: RoundCard(
+                      roundDetail: competition?.roundsDetails[index],
+                      roundNumber: index + 1,
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
