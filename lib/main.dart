@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_app/config/shared_prefs_config.dart';
 import 'package:my_app/logic/auth/auth_bloc.dart';
+import 'package:my_app/logic/connection/connection_bloc.dart';
 import 'package:my_app/logic/event/event_bloc.dart';
+import 'package:my_app/logic/match/match_bloc.dart';
 import 'package:my_app/screen/auth/login_screen.dart';
 import 'package:my_app/screen/main/main_screen.dart';
 
@@ -27,7 +29,9 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => NavigationBloc()),
           BlocProvider(create: (context) => SocketBloc()),
           BlocProvider(create: (context) => AuthBloc()),
-          BlocProvider(create: (context) => EventBloc())
+          BlocProvider(create: (context) => EventBloc()),
+          BlocProvider(create: (context) => ConnectionBloc()),
+          BlocProvider(create: (context) => MatchBloc())
         ],
         child: MaterialApp(
             title: 'MMA Scoring',

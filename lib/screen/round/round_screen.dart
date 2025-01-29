@@ -1,9 +1,13 @@
-// lib/screens/round_screen/round_screen.dart
 import 'package:flutter/material.dart';
+import 'package:my_app/config/screen_config.dart';
+import 'package:my_app/config/shared_prefs_config.dart';
 import 'package:my_app/screen/common/app_bar_widgets.dart';
+import 'package:my_app/screen/round/jury_round_screen.dart';
 import 'package:my_app/screen/round/widgets/referee_info_widget.dart';
+import 'package:my_app/utils/competetion_utils.dart';
 
 import '../../models/competetion_model.dart';
+import 'referee_round_screen.dart';
 import 'widgets/player_info_card.dart';
 import 'widgets/round_card.dart';
 
@@ -60,9 +64,49 @@ class RoundScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
-                    child: RoundCard(
-                      roundDetail: competition?.roundsDetails[index],
-                      roundNumber: index + 1,
+                    child: InkWell(
+                      onTap: () {
+                        SharedPrefsConfig.getString(
+                                    SharedPrefsConfig.keyUserRole) ==
+                                "jury"
+                            ? pushScreen(
+                                context,
+                                JuryRoundScreen(
+                                  eventId: competition?.eventId ?? "",
+                                  position: getUserPosition(
+                                        competition!,
+                                        SharedPrefsConfig.getString(
+                                          SharedPrefsConfig.keyUserId,
+                                        ),
+                                        SharedPrefsConfig.getString(
+                                          SharedPrefsConfig.keyUserRole,
+                                        ),
+                                      ) ??
+                                      "",
+                                ),
+                              )
+                            : pushScreen(
+                                context,
+                                RefereeRoundScreen(
+                                  position: getUserPosition(
+                                        competition!,
+                                        SharedPrefsConfig.getString(
+                                          SharedPrefsConfig.keyUserId,
+                                        ),
+                                        SharedPrefsConfig.getString(
+                                          SharedPrefsConfig.keyUserRole,
+                                        ),
+                                      ) ??
+                                      "",
+                                  eventId: competition?.eventId ?? "",
+                                  refereeId: SharedPrefsConfig.getString(
+                                      SharedPrefsConfig.keyUserId),
+                                ));
+                      },
+                      child: RoundCard(
+                        roundDetail: competition?.roundsDetails[index],
+                        roundNumber: index + 1,
+                      ),
                     ),
                   );
                 },
