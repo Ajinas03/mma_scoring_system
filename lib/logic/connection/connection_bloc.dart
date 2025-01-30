@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:meta/meta.dart';
 import 'package:my_app/config/shared_prefs_config.dart';
 import 'package:my_app/models/connected_user_model.dart';
@@ -20,13 +21,15 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
   MarkUpModel? markUpModel;
   SessionModel? sessionModel;
   String infoMessage = "no message revcieved yet";
-  String eventId = '';
+  String competitionId = '';
   String position = '';
   StreamSubscription? _connectivitySubscription;
   StreamSubscription? _wsSubscription;
+  final _audioPlayer = AudioPlayer();
 
   ConnectionBloc() : super(ConnectionInitial()) {
     print('🚀 Initializing ConnectionBloc');
+    _initAudio();
 
     on<ConnectWebSocket>(_onConnect);
     on<DisconnectWebSocket>(_onDisconnect);
@@ -44,6 +47,26 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
     });
   }
 
+  Future<void> _initAudio() async {
+    try {
+      // Load the audio file from your assets
+      await _audioPlayer.setAsset('assets/message-alert-190042.mp3');
+      print('🔊 Audio initialized successfully');
+    } catch (e) {
+      print('❌ Error initializing audio: $e');
+    }
+  }
+
+  Future<void> _playNotificationSound() async {
+    try {
+      await _audioPlayer.seek(Duration.zero);
+      await _audioPlayer.play();
+      print('🔔 Playing notification sound');
+    } catch (e) {
+      print('❌ Error playing audio: $e');
+    }
+  }
+
   void _onConnect(ConnectWebSocket event, Emitter<ConnectionState> emit) async {
     try {
       print('🔌 Connecting to WebSocket');
@@ -57,7 +80,7 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
       final wsUrl =
           'wss://masternode-856921708890.asia-south1.run.app/ws/v1.0/livePool';
       _channel = WebSocketChannel.connect(Uri.parse(wsUrl));
-      eventId = event.eventId;
+      competitionId = event.competitionId;
 
       position = event.position;
       final userRole =
@@ -66,7 +89,7 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
       final connectionMessage = jsonEncode({
         "username": userRole,
         "role": userRole,
-        "event": event.eventId,
+        "competitionId": event.competitionId,
         "position": position
       });
       _channel?.sink.add(connectionMessage);
@@ -132,15 +155,18 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
   void _onReconnect(ReconnectWebSocket event, Emitter<ConnectionState> emit) {
     if (state.status != ConnectionStatus.connected) {
       print('🔄 Reconnecting to WebSocket');
-      add(ConnectWebSocket(eventId: eventId, position: position));
+      add(ConnectWebSocket(competitionId: competitionId, position: position));
     }
   }
 
   void _onMessageReceived(
       MessageReceived event, Emitter<ConnectionState> emit) {
     print('📨 Processing received message: ${event.message}');
+
     try {
       final data = jsonDecode(event.message);
+      bool shouldPlaySound = false;
+
       if (data['type'] == 'session') {
         print('🕒 Session update: ${data['duration']} seconds remaining');
         print('👥 User session : $data');
@@ -166,6 +192,8 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
           print("connect user model exception $e");
         }
       } else if (data['type'] == 'mark') {
+        shouldPlaySound = true; // Play sound for session updates
+
         print('👥 User connection mark: $data');
 
         try {
@@ -176,6 +204,10 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
         }
       } else {
         print('📥 Other message received');
+      }
+
+      if (shouldPlaySound) {
+        _playNotificationSound();
       }
 
       emit(ConnectionState(
@@ -194,7 +226,7 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
     final payload = jsonEncode({
       'action': 'start_timer',
       'role': event.role,
-      'event': eventId,
+      'event': competitionId,
       'position': event.position,
     });
     print('⏳ Sending start timer request: $payload');
@@ -206,8 +238,9 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
       'action': 'mark',
       'mark': event.mark,
       'role': event.role,
-      'event': eventId,
+      'event': competitionId,
       'position': event.position,
+      'ismarkedToRed': event.ismarkedToRed,
       'time': DateTime.now().millisecondsSinceEpoch,
     });
     print('🏅 Sending mark score request: $payload');
@@ -225,6 +258,7 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
   @override
   Future<void> close() async {
     print('🛑 Closing ConnectionBloc');
+    await _audioPlayer.dispose();
     await _connectivitySubscription?.cancel();
     await _wsSubscription?.cancel();
     await _channel?.sink.close();

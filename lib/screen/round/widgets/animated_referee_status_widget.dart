@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/screen/round/widgets/timer_display.dart';
 
 import '../../../models/connected_user_model.dart';
 
@@ -49,16 +50,8 @@ class _RefereeStatusWidgetState extends State<RefereeStatusWidget> {
                   ),
                 ],
               ),
-              child: Column(
+              child: Row(
                 children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
                   TweenAnimationBuilder<double>(
                     duration: const Duration(milliseconds: 500),
                     tween: Tween<double>(
@@ -84,12 +77,12 @@ class _RefereeStatusWidgetState extends State<RefereeStatusWidget> {
                       );
                     },
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(width: 8),
                   Text(
-                    isConnected ? 'Connected' : 'Disconnected',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: isConnected ? Colors.green : Colors.grey,
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
@@ -105,81 +98,36 @@ class _RefereeStatusWidgetState extends State<RefereeStatusWidget> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
-            'Referee Connection Status',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: _buildStatusIndicator(
-                  'Main Jury',
-                  widget.model?.details.mainJury.isConnected ?? false,
-                ),
+              _buildStatusIndicator(
+                'Main Jury',
+                widget.model?.details.mainJury.isConnected ?? false,
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _buildStatusIndicator(
-                  'Corner A',
-                  widget.model?.details.cornerAReferee.isConnected ?? false,
-                ),
+              _buildStatusIndicator(
+                'Corner A',
+                widget.model?.details.cornerAReferee.isConnected ?? false,
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          TimerDisplay(),
+          Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: _buildStatusIndicator(
-                  'Corner B',
-                  widget.model?.details.cornerBReferee.isConnected ?? false,
-                ),
+              _buildStatusIndicator(
+                'Corner B',
+                widget.model?.details.cornerBReferee.isConnected ?? false,
               ),
               const SizedBox(width: 8),
-              Expanded(
-                child: _buildStatusIndicator(
-                  'Corner C',
-                  widget.model?.details.cornerCReferee.isConnected ?? false,
-                ),
+              _buildStatusIndicator(
+                'Corner C',
+                widget.model?.details.cornerCReferee.isConnected ?? false,
               ),
             ],
-          ),
-          const SizedBox(height: 24),
-          TweenAnimationBuilder<double>(
-            duration: const Duration(milliseconds: 600),
-            curve: Curves.easeOut,
-            tween: Tween<double>(begin: 0.0, end: 1.0),
-            builder: (context, value, child) {
-              return Opacity(
-                opacity: value,
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: _areAllConnected()
-                        ? Colors.green.withOpacity(0.1 * value)
-                        : Colors.grey.withOpacity(0.1 * value),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Text(
-                    _getStatusMessage(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: _areAllConnected() ? Colors.green : Colors.grey,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              );
-            },
           ),
         ],
       ),

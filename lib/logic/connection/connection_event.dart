@@ -4,10 +4,10 @@ part of 'connection_bloc.dart';
 abstract class ConnectionEvent {}
 
 class ConnectWebSocket extends ConnectionEvent {
-  final String eventId;
+  final String competitionId;
   final String position;
   ConnectWebSocket({
-    required this.eventId,
+    required this.competitionId,
     required this.position,
   });
 }
@@ -29,8 +29,10 @@ class MarkScore extends ConnectionEvent {
   final String role;
   final String position;
   final String mark;
+  final bool ismarkedToRed;
   MarkScore({
     required this.role,
+    required this.ismarkedToRed,
     required this.mark,
     required this.position,
   });

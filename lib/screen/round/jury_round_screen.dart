@@ -7,13 +7,11 @@ import '../../config/shared_prefs_config.dart';
 import '../../logic/connection/connection_bloc.dart' as ct;
 import '../../logic/match/match_bloc.dart';
 import 'widgets/animated_referee_status_widget.dart';
-import 'widgets/participant_status.dart';
-import 'widgets/timer_display.dart';
 
 class JuryRoundScreen extends StatefulWidget {
   const JuryRoundScreen(
-      {super.key, required this.eventId, required this.position});
-  final String eventId;
+      {super.key, required this.competitionId, required this.position});
+  final String competitionId;
   final String position;
 
   @override
@@ -25,19 +23,17 @@ class _JuryRoundScreenState extends State<JuryRoundScreen> {
 
   @override
   void initState() {
+    super.initState();
     _connectionBloc = context.read<ConnectionBloc>();
     _connectionBloc.add(ConnectWebSocket(
-      eventId: widget.eventId,
+      competitionId: widget.competitionId,
       position: widget.position,
     ));
-    // TODO: implement initState
-    super.initState();
   }
 
   @override
   void dispose() {
     _connectionBloc.add(DisconnectWebSocket());
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -56,19 +52,28 @@ class _JuryRoundScreenState extends State<JuryRoundScreen> {
         ],
       ),
       body: BlocBuilder<MatchBloc, MatchState>(
-        builder: (context, state) {
-          return ListView(
+        builder: (context, matchState) {
+          return Column(
             children: [
-              const TimerDisplay(),
+              // const TimerDisplay(),
               BlocBuilder<ct.ConnectionBloc, ct.ConnectionState>(
                 builder: (context, cState) {
                   return RefereeStatusWidget(model: cState.connectedUserModel);
                 },
               ),
+              // const ParticipantStatus(),
 
-              const ParticipantStatus(),
-              // const ScoreBoard(),
-              const Spacer(),
+              BlocBuilder<ct.ConnectionBloc, ct.ConnectionState>(
+                builder: (context, cState) {
+                  return cState.markUpModel == null
+                      ? Center(child: Text("NO mark Available"))
+                      : Expanded(
+                          child:
+                              AnimatedMarkupList(newItem: cState.markUpModel),
+                        );
+                },
+              ),
+
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
@@ -77,19 +82,20 @@ class _JuryRoundScreenState extends State<JuryRoundScreen> {
                     ElevatedButton(
                       onPressed: () {
                         context.read<ct.ConnectionBloc>().add(StartTimer(
-                            role: SharedPrefsConfig.getString(
-                                SharedPrefsConfig.keyUserRole),
-                            position: widget.position));
+                              role: SharedPrefsConfig.getString(
+                                  SharedPrefsConfig.keyUserRole),
+                              position: widget.position,
+                            ));
                       },
                       child: const Text('Start Match'),
                     ),
-                    if (state.isActive && !state.isPaused)
+                    if (matchState.isActive && !matchState.isPaused)
                       ElevatedButton(
                         onPressed: () =>
                             context.read<MatchBloc>().add(PauseMatch()),
                         child: const Text('Pause'),
                       ),
-                    if (state.isPaused)
+                    if (matchState.isPaused)
                       ElevatedButton(
                         onPressed: () =>
                             context.read<MatchBloc>().add(StartMatch()),
@@ -97,10 +103,7 @@ class _JuryRoundScreenState extends State<JuryRoundScreen> {
                       ),
                     ElevatedButton(
                       onPressed: () {
-                        // context.read<ct.ConnectionBloc>().add(StartTimer(
-                        //     role: SharedPrefsConfig.getString(
-                        //         SharedPrefsConfig.keyUserRole),
-                        //     position: widget.position));
+                        // Handle stop match logic
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
@@ -109,19 +112,6 @@ class _JuryRoundScreenState extends State<JuryRoundScreen> {
                     ),
                   ],
                 ),
-              ),
-              BlocBuilder<ct.ConnectionBloc, ct.ConnectionState>(
-                builder: (context, cState) {
-                  return cState.markUpModel == null
-                      ? Center(
-                          child: Text("NO mark Availble"),
-                        )
-                      : Container(
-                          height: 500,
-                          color: Colors.red,
-                          child:
-                              AnimatedMarkupList(newItem: cState.markUpModel));
-                },
               ),
             ],
           );

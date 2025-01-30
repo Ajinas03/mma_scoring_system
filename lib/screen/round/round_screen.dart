@@ -72,7 +72,7 @@ class RoundScreen extends StatelessWidget {
                             ? pushScreen(
                                 context,
                                 JuryRoundScreen(
-                                  eventId: competition?.eventId ?? "",
+                                  competitionId: competition?.id ?? "",
                                   position: getUserPosition(
                                         competition!,
                                         SharedPrefsConfig.getString(
@@ -98,7 +98,7 @@ class RoundScreen extends StatelessWidget {
                                         ),
                                       ) ??
                                       "",
-                                  eventId: competition?.eventId ?? "",
+                                  competitionId: competition?.id ?? "",
                                   refereeId: SharedPrefsConfig.getString(
                                       SharedPrefsConfig.keyUserId),
                                 ));

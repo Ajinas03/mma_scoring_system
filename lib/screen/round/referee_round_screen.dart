@@ -8,19 +8,19 @@ import 'widgets/timer_display.dart';
 
 class RefereeRoundScreen extends StatelessWidget {
   final String refereeId;
-  final String eventId;
+  final String competitionId;
   final String position;
   const RefereeRoundScreen(
       {super.key,
       required this.refereeId,
-      required this.eventId,
+      required this.competitionId,
       required this.position});
 
   @override
   Widget build(BuildContext context) {
     context.read<ct.ConnectionBloc>().add(
           ct.ConnectWebSocket(
-            eventId: eventId,
+            competitionId: competitionId,
             position: position,
           ),
         );

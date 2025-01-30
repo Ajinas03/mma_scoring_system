@@ -54,6 +54,7 @@ class ScoreControls extends StatelessWidget {
                     context.read<ct.ConnectionBloc>().add(ct.MarkScore(
                         role: SharedPrefsConfig.getString(
                             SharedPrefsConfig.keyUserRole),
+                        ismarkedToRed: true,
                         mark: mark.toString(),
                         position: position));
                   },
@@ -84,6 +85,7 @@ class ScoreControls extends StatelessWidget {
                   onPressed: () {
                     mark++;
                     context.read<ct.ConnectionBloc>().add(ct.MarkScore(
+                        ismarkedToRed: false,
                         role: SharedPrefsConfig.getString(
                             SharedPrefsConfig.keyUserRole),
                         mark: mark.toString(),
