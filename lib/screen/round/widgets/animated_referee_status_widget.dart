@@ -36,20 +36,21 @@ class _RefereeStatusWidgetState extends State<RefereeStatusWidget> {
           offset: Offset((1 - value) * 50, 0), // Slide from left
           child: Opacity(
             opacity: value,
-            child: Container(
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2 * value),
-                    spreadRadius: 1,
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+              // decoration: BoxDecoration(
+              //   borderRadius: BorderRadius.circular(8.0),
+              //   color: Colors.white,
+              // boxShadow: [
+              //   BoxShadow(
+              //     color: Colors.grey.withOpacity(0.2 * value),
+              //     spreadRadius: 1,
+              //     blurRadius: 4,
+              //     offset: const Offset(0, 2),
+              //   ),
+              // ],
+              // ),
               child: Row(
                 children: [
                   TweenAnimationBuilder<double>(
@@ -134,17 +135,17 @@ class _RefereeStatusWidgetState extends State<RefereeStatusWidget> {
     );
   }
 
-  bool _areAllConnected() {
-    return (widget.model?.details.mainJury.isConnected ?? false) &&
-        (widget.model?.details.cornerAReferee.isConnected ?? false) &&
-        (widget.model?.details.cornerBReferee.isConnected ?? false) &&
-        (widget.model?.details.cornerCReferee.isConnected ?? false);
-  }
+  // bool _areAllConnected() {
+  //   return (widget.model?.details.mainJury.isConnected ?? false) &&
+  //       (widget.model?.details.cornerAReferee.isConnected ?? false) &&
+  //       (widget.model?.details.cornerBReferee.isConnected ?? false) &&
+  //       (widget.model?.details.cornerCReferee.isConnected ?? false);
+  // }
 
-  String _getStatusMessage() {
-    if (_areAllConnected()) {
-      return 'All referees connected successfully';
-    }
-    return 'Waiting for all referees to connect...';
-  }
+  // String _getStatusMessage() {
+  //   if (_areAllConnected()) {
+  //     return 'All referees connected successfully';
+  //   }
+  //   return 'Waiting for all referees to connect...';
+  // }
 }

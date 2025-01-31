@@ -11,8 +11,9 @@ enum ConnectionStatus {
 class ConnectionInitial extends ConnectionState {
   ConnectionInitial()
       : super(
-          status: ConnectionStatus.initial,
-        );
+            status: ConnectionStatus.initial,
+            isStartTimer: false,
+            isPauseTimer: false);
 }
 
 class ConnectionState {
@@ -22,11 +23,15 @@ class ConnectionState {
   final ConnectionStatus status;
   final WebSocketChannel? channel;
   final String? errorMessage;
-
   final String? infoMessage;
+
+  final bool isStartTimer;
+  final bool isPauseTimer;
 
   ConnectionState(
       {required this.status,
+      required this.isStartTimer,
+      required this.isPauseTimer,
       this.sessionModel,
       this.markUpModel,
       this.connectedUserModel,

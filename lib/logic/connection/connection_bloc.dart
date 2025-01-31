@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:meta/meta.dart';
 import 'package:my_app/config/shared_prefs_config.dart';
@@ -36,6 +37,10 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
     on<ReconnectWebSocket>(_onReconnect);
     on<MessageReceived>(_onMessageReceived);
     on<StartTimer>(_onStartTimer);
+    on<PauseTimer>(_onPauseTimer);
+    on<StopTimer>(_onStopTimer);
+    on<ResumeTimer>(_onResumeTimer);
+
     on<MarkScore>(_onMarkScore);
 
     _connectivitySubscription =
@@ -72,6 +77,8 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
       print('🔌 Connecting to WebSocket');
       await _wsSubscription?.cancel();
       emit(ConnectionState(
+          isPauseTimer: state.isPauseTimer,
+          isStartTimer: state.isStartTimer,
           markUpModel: state.markUpModel,
           sessionModel: state.sessionModel,
           status: ConnectionStatus.connecting,
@@ -95,6 +102,8 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
       _channel?.sink.add(connectionMessage);
       print("connection payload xxxxxxxxxxx $connectionMessage");
       emit(ConnectionState(
+          isPauseTimer: state.isPauseTimer,
+          isStartTimer: state.isStartTimer,
           markUpModel: state.markUpModel,
           sessionModel: state.sessionModel,
           connectedUserModel: state.connectedUserModel,
@@ -110,6 +119,8 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
         onError: (error) {
           print('⚠️ WebSocket error: $error');
           emit(ConnectionState(
+              isPauseTimer: state.isPauseTimer,
+              isStartTimer: state.isStartTimer,
               markUpModel: state.markUpModel,
               sessionModel: state.sessionModel,
               connectedUserModel: state.connectedUserModel,
@@ -128,6 +139,8 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
     } catch (e) {
       print('❌ Connection error: $e');
       emit(ConnectionState(
+          isPauseTimer: state.isPauseTimer,
+          isStartTimer: state.isStartTimer,
           markUpModel: state.markUpModel,
           sessionModel: state.sessionModel,
           connectedUserModel: state.connectedUserModel,
@@ -145,6 +158,8 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
     _channel = null;
     _reconnectTimer?.cancel();
     emit(ConnectionState(
+        isPauseTimer: false,
+        isStartTimer: false,
         markUpModel: state.markUpModel,
         sessionModel: state.sessionModel,
         status: ConnectionStatus.disconnected,
@@ -161,6 +176,7 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
 
   void _onMessageReceived(
       MessageReceived event, Emitter<ConnectionState> emit) {
+    HapticFeedback.mediumImpact();
     print('📨 Processing received message: ${event.message}');
 
     try {
@@ -207,10 +223,13 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
       }
 
       if (shouldPlaySound) {
+        HapticFeedback.mediumImpact();
         _playNotificationSound();
       }
 
       emit(ConnectionState(
+          isPauseTimer: state.isPauseTimer,
+          isStartTimer: state.isStartTimer,
           status: state.status,
           channel: state.channel,
           infoMessage: infoMessage,
@@ -230,6 +249,77 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
       'position': event.position,
     });
     print('⏳ Sending start timer request: $payload');
+
+    _channel?.sink.add(payload);
+
+    emit(ConnectionState(
+        status: state.status,
+        channel: state.channel,
+        infoMessage: infoMessage,
+        markUpModel: markUpModel,
+        sessionModel: sessionModel,
+        connectedUserModel: connectedUserModel,
+        isStartTimer: true,
+        isPauseTimer: false));
+  }
+
+  void _onPauseTimer(PauseTimer event, Emitter<ConnectionState> emit) {
+    final payload = jsonEncode({
+      'action': 'pause_timer',
+      'role': event.role,
+      'event': competitionId,
+      'position': event.position,
+    });
+    print('⏳ Sending Pause timer request: $payload');
+    _channel?.sink.add(payload);
+    emit(ConnectionState(
+        status: state.status,
+        channel: state.channel,
+        infoMessage: infoMessage,
+        markUpModel: markUpModel,
+        sessionModel: sessionModel,
+        connectedUserModel: connectedUserModel,
+        isStartTimer: true,
+        isPauseTimer: true));
+  }
+
+  void _onResumeTimer(ResumeTimer event, Emitter<ConnectionState> emit) {
+    final payload = jsonEncode({
+      'action': 'resume_timer',
+      'role': event.role,
+      'event': competitionId,
+      'position': event.position,
+    });
+    print('⏳ Sending resume timer request: $payload');
+    _channel?.sink.add(payload);
+    emit(ConnectionState(
+        status: state.status,
+        channel: state.channel,
+        infoMessage: infoMessage,
+        markUpModel: markUpModel,
+        sessionModel: sessionModel,
+        connectedUserModel: connectedUserModel,
+        isStartTimer: true,
+        isPauseTimer: false));
+  }
+
+  void _onStopTimer(StopTimer event, Emitter<ConnectionState> emit) {
+    final payload = jsonEncode({
+      'action': 'complete_session',
+      'role': event.role,
+      'event': competitionId,
+      'position': event.position,
+    });
+    emit(ConnectionState(
+        status: state.status,
+        channel: state.channel,
+        infoMessage: infoMessage,
+        markUpModel: markUpModel,
+        sessionModel: sessionModel,
+        connectedUserModel: connectedUserModel,
+        isStartTimer: false,
+        isPauseTimer: false));
+    print('⏳ Sending Stop timer request: $payload');
     _channel?.sink.add(payload);
   }
 

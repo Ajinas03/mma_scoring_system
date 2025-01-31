@@ -65,9 +65,6 @@ class ScoreControls extends StatelessWidget {
                 ),
                 BlocBuilder<MatchBloc, MatchState>(
                   builder: (context, state) {
-                    final scores = playerId == 'player_one'
-                        ? state.playerOneScores
-                        : state.playerTwoScores;
                     return BlocBuilder<ct.ConnectionBloc, ct.ConnectionState>(
                       builder: (context, cState) {
                         return Text(

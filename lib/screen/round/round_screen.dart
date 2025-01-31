@@ -15,6 +15,13 @@ class RoundScreen extends StatelessWidget {
   final CompetetionModel? competition;
 
   const RoundScreen({super.key, required this.competition});
+  bool isRoundSelectable(List<RoundsDetail> rounds, int currentIndex) {
+    // First round is always selectable
+    if (currentIndex == 0) return true;
+
+    // Check if previous round is completed
+    return rounds[currentIndex - 1].status == 2;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,57 +67,60 @@ class RoundScreen extends StatelessWidget {
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: competition?.roundsDetails.length,
+                itemCount: competition?.roundsDetails.length ?? 0,
                 itemBuilder: (context, index) {
+                  final isEnabled = isRoundSelectable(
+                    competition?.roundsDetails ?? [],
+                    index,
+                  );
+
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: InkWell(
-                      onTap: () {
-                        SharedPrefsConfig.getString(
-                                    SharedPrefsConfig.keyUserRole) ==
-                                "jury"
-                            ? pushScreen(
-                                context,
-                                JuryRoundScreen(
-                                  competitionId: competition?.id ?? "",
-                                  position: getUserPosition(
-                                        competition!,
-                                        SharedPrefsConfig.getString(
-                                          SharedPrefsConfig.keyUserId,
-                                        ),
-                                        SharedPrefsConfig.getString(
-                                          SharedPrefsConfig.keyUserRole,
-                                        ),
-                                      ) ??
-                                      "",
-                                ),
-                              )
-                            : pushScreen(
-                                context,
-                                RefereeRoundScreen(
-                                  position: getUserPosition(
-                                        competition!,
-                                        SharedPrefsConfig.getString(
-                                          SharedPrefsConfig.keyUserId,
-                                        ),
-                                        SharedPrefsConfig.getString(
-                                          SharedPrefsConfig.keyUserRole,
-                                        ),
-                                      ) ??
-                                      "",
-                                  competitionId: competition?.id ?? "",
-                                  refereeId: SharedPrefsConfig.getString(
-                                      SharedPrefsConfig.keyUserId),
-                                ));
-                      },
+                      onTap: isEnabled
+                          ? () {
+                              final userRole = SharedPrefsConfig.getString(
+                                SharedPrefsConfig.keyUserRole,
+                              );
+                              final userId = SharedPrefsConfig.getString(
+                                SharedPrefsConfig.keyUserId,
+                              );
+                              final position = getUserPosition(
+                                    competition!,
+                                    userId,
+                                    userRole,
+                                  ) ??
+                                  "";
+
+                              if (userRole == "jury") {
+                                pushScreen(
+                                  context,
+                                  JuryRoundScreen(
+                                    competitionId: competition?.id ?? "",
+                                    position: position,
+                                  ),
+                                );
+                              } else {
+                                pushScreen(
+                                  context,
+                                  RefereeRoundScreen(
+                                    position: position,
+                                    competitionId: competition?.id ?? "",
+                                    refereeId: userId,
+                                  ),
+                                );
+                              }
+                            }
+                          : null,
                       child: RoundCard(
                         roundDetail: competition?.roundsDetails[index],
                         roundNumber: index + 1,
+                        isEnabled: isEnabled,
                       ),
                     ),
                   );
                 },
-              ),
+              )
             ],
           ),
         ),

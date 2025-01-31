@@ -25,6 +25,33 @@ class StartTimer extends ConnectionEvent {
   });
 }
 
+class PauseTimer extends ConnectionEvent {
+  final String role;
+  final String position;
+  PauseTimer({
+    required this.role,
+    required this.position,
+  });
+}
+
+class StopTimer extends ConnectionEvent {
+  final String role;
+  final String position;
+  StopTimer({
+    required this.role,
+    required this.position,
+  });
+}
+
+class ResumeTimer extends ConnectionEvent {
+  final String role;
+  final String position;
+  ResumeTimer({
+    required this.role,
+    required this.position,
+  });
+}
+
 class MarkScore extends ConnectionEvent {
   final String role;
   final String position;
