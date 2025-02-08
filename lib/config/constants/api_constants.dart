@@ -19,6 +19,7 @@ class ApiConstants {
   static const String createMatch = "/api/v1.0/create-competition";
   static const String checkUserExist = "/api/v1.0/check-userexist/";
   static const String addParticipantToEvent = "/api/v1.0/addParticipantToEvent";
-
   static const String getCompetitionDetails = " api/v1.0/competition-details";
+  static const String updateRoundStatus = '/api/v1.0/update-round-status';
+  static const String getRoundDetails = '/api/v1.0/getRoundDetails';
 }

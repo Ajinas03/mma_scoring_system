@@ -27,31 +27,29 @@ class GameBoyStyleControls extends StatelessWidget {
         children: [
           // Blue side
           Expanded(
-            child: Container(
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Left button (higher)
-                    Transform.translate(
-                      offset: Offset(0, -buttonSize * 0.3),
-                      child: RetroGameButton(
-                        onPressed: onBlueLeftPressed,
-                        icon: Icons.remove,
-                        buttonColor: Colors.blue.shade700,
-                        size: buttonSize,
-                      ),
-                    ),
-                    SizedBox(width: buttonSize * 0.4),
-                    // Right button (lower)
-                    RetroGameButton(
-                      onPressed: onBlueRightPressed,
-                      icon: Icons.add,
-                      buttonColor: Colors.blue.shade900,
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Left button (higher)
+                  Transform.translate(
+                    offset: Offset(0, -buttonSize * 0.3),
+                    child: RetroGameButton(
+                      onPressed: onBlueLeftPressed,
+                      icon: Icons.remove,
+                      buttonColor: Colors.blue.shade700,
                       size: buttonSize,
                     ),
-                  ],
-                ),
+                  ),
+                  SizedBox(width: buttonSize * 0.4),
+                  // Right button (lower)
+                  RetroGameButton(
+                    onPressed: onBlueRightPressed,
+                    icon: Icons.add,
+                    buttonColor: Colors.blue.shade900,
+                    size: buttonSize,
+                  ),
+                ],
               ),
             ),
           ),
@@ -68,31 +66,29 @@ class GameBoyStyleControls extends StatelessWidget {
           ),
           // Red side
           Expanded(
-            child: Container(
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Left button (lower)
-                    RetroGameButton(
-                      onPressed: onRedLeftPressed,
-                      icon: Icons.add,
-                      buttonColor: Colors.red.shade900,
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Left button (lower)
+                  RetroGameButton(
+                    onPressed: onRedLeftPressed,
+                    icon: Icons.add,
+                    buttonColor: Colors.red.shade900,
+                    size: buttonSize,
+                  ),
+                  SizedBox(width: buttonSize * 0.4),
+                  // Right button (higher)
+                  Transform.translate(
+                    offset: Offset(0, -buttonSize * 0.3),
+                    child: RetroGameButton(
+                      onPressed: onRedRightPressed,
+                      icon: Icons.remove,
+                      buttonColor: Colors.red.shade700,
                       size: buttonSize,
                     ),
-                    SizedBox(width: buttonSize * 0.4),
-                    // Right button (higher)
-                    Transform.translate(
-                      offset: Offset(0, -buttonSize * 0.3),
-                      child: RetroGameButton(
-                        onPressed: onRedRightPressed,
-                        icon: Icons.remove,
-                        buttonColor: Colors.red.shade700,
-                        size: buttonSize,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

@@ -6,8 +6,10 @@ abstract class ConnectionEvent {}
 class ConnectWebSocket extends ConnectionEvent {
   final String competitionId;
   final String position;
+  final int round;
   ConnectWebSocket({
     required this.competitionId,
+    required this.round,
     required this.position,
   });
 }

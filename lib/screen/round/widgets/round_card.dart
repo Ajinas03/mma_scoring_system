@@ -79,20 +79,20 @@ class RoundCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 8),
-                    Text(
-                      'History:',
-                      style: TextStyle(
-                        color: isEnabled ? null : Colors.grey,
-                      ),
-                    ),
-                    ...roundDetail!.history.map(
-                      (event) => Text(
-                        '• $event',
-                        style: TextStyle(
-                          color: isEnabled ? null : Colors.grey,
-                        ),
-                      ),
-                    ),
+                    // Text(
+                    //   'History:',
+                    //   style: TextStyle(
+                    //     color: isEnabled ? null : Colors.grey,
+                    //   ),
+                    // ),
+                    // ...roundDetail!.history.map(
+                    //   (event) => Text(
+                    //     '• $event',
+                    //     style: TextStyle(
+                    //       color: isEnabled ? null : Colors.grey,
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 )
               : null,

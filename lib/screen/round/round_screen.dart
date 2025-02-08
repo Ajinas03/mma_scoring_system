@@ -96,6 +96,7 @@ class RoundScreen extends StatelessWidget {
                                 pushScreen(
                                   context,
                                   JuryRoundScreen(
+                                    round: index + 1,
                                     competitionId: competition?.id ?? "",
                                     position: position,
                                   ),
@@ -107,6 +108,7 @@ class RoundScreen extends StatelessWidget {
                                     position: position,
                                     competitionId: competition?.id ?? "",
                                     refereeId: userId,
+                                    round: index + 1,
                                   ),
                                 );
                               }

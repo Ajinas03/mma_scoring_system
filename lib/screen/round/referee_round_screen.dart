@@ -12,10 +12,12 @@ class RefereeRoundScreen extends StatelessWidget {
   final String refereeId;
   final String competitionId;
   final String position;
+  final int round;
 
   const RefereeRoundScreen({
     super.key,
     required this.refereeId,
+    required this.round,
     required this.competitionId,
     required this.position,
   });
@@ -25,6 +27,7 @@ class RefereeRoundScreen extends StatelessWidget {
     // Initialize WebSocket connection
     context.read<ct.ConnectionBloc>().add(
           ct.ConnectWebSocket(
+            round: round,
             competitionId: competitionId,
             position: position,
           ),
@@ -36,45 +39,56 @@ class RefereeRoundScreen extends StatelessWidget {
       ),
       body: BlocBuilder<ct.ConnectionBloc, ct.ConnectionState>(
         builder: (context, state) {
-          return Column(
-            children: [
-              // Referee Status
-              RefereeStatusWidget(model: state.connectedUserModel),
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                // Referee Status
+                RefereeStatusWidget(model: state.connectedUserModel),
 
-              // Markup List
-              state.markUpModel == null
-                  ? const Expanded(
-                      flex: 3, child: Center(child: Text("NO mark Available")))
-                  : Expanded(
-                      flex: 3,
-                      child: AnimatedMarkupList(newItem: state.markUpModel),
-                    ),
+                // Markup List
+                state.markUpModel == null
+                    ? const Expanded(
+                        flex: 3,
+                        child: Center(child: Text("NO mark Available")))
+                    : Expanded(
+                        flex: 3,
+                        child: AnimatedMarkupList(
+                          newItem: state.markUpModel,
+                          competitionId: competitionId,
+                          round: round,
+                        ),
+                      ),
 
-              // Game Controls
-              state.sessionModel?.duration == 0
-                  ? Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextWidget(
-                        text: "Game is Not Availalbe Now \nPls Wait",
-                        fontWeight: FontWeight.bold,
-                        textAlign: TextAlign.center,
-                        fontSize: 24,
+                // Game Controls
+                state.sessionModel?.duration == 0
+                    ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextWidget(
+                          text: "Game is Not Availalbe Now \nPls Wait",
+                          fontWeight: FontWeight.bold,
+                          textAlign: TextAlign.center,
+                          fontSize: 24,
+                        ),
+                      )
+                    : Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.all(0.0),
+                          child: GameBoyStyleControls(
+                            onBlueLeftPressed: () =>
+                                _handleScore(context, false, "-1"),
+                            onBlueRightPressed: () =>
+                                _handleScore(context, false, "1"),
+                            onRedLeftPressed: () =>
+                                _handleScore(context, true, "1"),
+                            onRedRightPressed: () =>
+                                _handleScore(context, true, "-1"),
+                            buttonSize: 75,
+                          ),
+                        ),
                       ),
-                    )
-                  : Flexible(
-                      child: GameBoyStyleControls(
-                        onBlueLeftPressed: () =>
-                            _handleScore(context, false, "-1"),
-                        onBlueRightPressed: () =>
-                            _handleScore(context, false, "1"),
-                        onRedLeftPressed: () =>
-                            _handleScore(context, true, "1"),
-                        onRedRightPressed: () =>
-                            _handleScore(context, true, "-1"),
-                        buttonSize: 80,
-                      ),
-                    ),
-            ],
+              ],
+            ),
           );
         },
       ),

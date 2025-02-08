@@ -24,6 +24,7 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
   String infoMessage = "no message revcieved yet";
   String competitionId = '';
   String position = '';
+  int round = 0;
   StreamSubscription? _connectivitySubscription;
   StreamSubscription? _wsSubscription;
   final _audioPlayer = AudioPlayer();
@@ -92,12 +93,13 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
       position = event.position;
       final userRole =
           SharedPrefsConfig.getString(SharedPrefsConfig.keyUserRole);
-
+      round = event.round;
       final connectionMessage = jsonEncode({
         "username": userRole,
         "role": userRole,
         "competitionId": event.competitionId,
-        "position": position
+        "position": position,
+        "round": event.round
       });
       _channel?.sink.add(connectionMessage);
       print("connection payload xxxxxxxxxxx $connectionMessage");
@@ -170,7 +172,8 @@ class ConnectionBloc extends Bloc<ConnectionEvent, ConnectionState> {
   void _onReconnect(ReconnectWebSocket event, Emitter<ConnectionState> emit) {
     if (state.status != ConnectionStatus.connected) {
       print('🔄 Reconnecting to WebSocket');
-      add(ConnectWebSocket(competitionId: competitionId, position: position));
+      add(ConnectWebSocket(
+          competitionId: competitionId, position: position, round: round));
     }
   }
 

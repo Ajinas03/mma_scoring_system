@@ -1,12 +1,15 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_app/config/screen_config.dart';
 import 'package:my_app/models/create_event_model.dart';
 import 'package:my_app/models/get_participants_model.dart';
+import 'package:my_app/models/round_analytics_model.dart';
 import 'package:my_app/repo/event_repo.dart';
 
 import '../../models/competetion_model.dart';
 import '../../models/event_resp_model.dart';
+import '../../screen/round/round_analytics_display.dart';
 
 part 'event_event.dart';
 part 'event_state.dart';
@@ -77,6 +80,29 @@ class EventBloc extends Bloc<EventEvent, EventState> {
             events: state.events,
             getParicipantsModel: state.getParicipantsModel,
             competetionModel: competetionModel));
+      }
+
+      if (event is GetRoundAnalytics) {
+        emit(EventState(
+            isLoading: true,
+            events: state.events,
+            getParicipantsModel: state.getParicipantsModel));
+
+        final analytics = await EventRepo.getRoundAnalytics(
+            context: event.context,
+            competitionId: event.competitionId,
+            round: event.round,
+            position: event.position);
+
+        pushScreen(
+            event.context, RoundAnalyticsDisplay(roundAnalytics: analytics));
+
+        emit(EventState(
+            isLoading: false,
+            events: state.events,
+            roundAnalyticsModel: analytics,
+            getParicipantsModel: state.getParicipantsModel,
+            competetionModel: state.competetionModel));
       }
     });
   }

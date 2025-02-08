@@ -78,7 +78,7 @@ class _RefereeStatusWidgetState extends State<RefereeStatusWidget> {
                       );
                     },
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 5),
                   Text(
                     title,
                     style: const TextStyle(
@@ -98,37 +98,41 @@ class _RefereeStatusWidgetState extends State<RefereeStatusWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(0.0),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildStatusIndicator(
-                'Main Jury',
-                widget.model?.details.mainJury.isConnected ?? false,
-              ),
-              _buildStatusIndicator(
-                'Corner A',
-                widget.model?.details.cornerAReferee.isConnected ?? false,
-              ),
-            ],
+          Flexible(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildStatusIndicator(
+                  'Main Jury',
+                  widget.model?.details.mainJury.isConnected ?? false,
+                ),
+                _buildStatusIndicator(
+                  'Corner A',
+                  widget.model?.details.cornerAReferee.isConnected ?? false,
+                ),
+              ],
+            ),
           ),
           TimerDisplay(),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildStatusIndicator(
-                'Corner B',
-                widget.model?.details.cornerBReferee.isConnected ?? false,
-              ),
-              const SizedBox(width: 8),
-              _buildStatusIndicator(
-                'Corner C',
-                widget.model?.details.cornerCReferee.isConnected ?? false,
-              ),
-            ],
+          Flexible(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildStatusIndicator(
+                  'Corner B',
+                  widget.model?.details.cornerBReferee.isConnected ?? false,
+                ),
+                const SizedBox(width: 8),
+                _buildStatusIndicator(
+                  'Corner C',
+                  widget.model?.details.cornerCReferee.isConnected ?? false,
+                ),
+              ],
+            ),
           ),
         ],
       ),

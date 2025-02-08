@@ -12,6 +12,7 @@ import '../models/competetion_model.dart';
 import '../models/create_event_model.dart';
 import '../models/event_resp_model.dart';
 import '../models/get_participants_model.dart';
+import '../models/round_analytics_model.dart';
 
 class EventRepo {
   static const String baseUrl = ApiConstants.baseUrl;
@@ -243,6 +244,114 @@ class EventRepo {
     } catch (e) {
       print("get competition details error : $e");
       return [];
+    }
+  }
+
+  static Future<ApiResponse> updateRoundStatus({
+    required BuildContext context,
+    required String competitionId,
+    required int round,
+    required int status,
+  }) async {
+    final bearerToken =
+        SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
+    const key = "update round status";
+
+    try {
+      final queryParameters = {
+        'competitionId': competitionId,
+        'round': round.toString(),
+        'status': status.toString(),
+      };
+
+      final response = await http.put(
+        Uri.parse('$baseUrl${ApiConstants.updateRoundStatus}').replace(
+          queryParameters: queryParameters,
+        ),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $bearerToken',
+        },
+      );
+
+      final responseData = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        ToastConfig.showSuccess(context, 'Round status updated successfully');
+        print("$key updated successfully  resp ${response.body}");
+        return ApiResponse(
+          success: true,
+          message: 'Round status updated successfully',
+          data: responseData,
+        );
+      } else {
+        ToastConfig.showError(context,
+            responseData['message'] ?? 'Failed to update round status');
+        print("$key update failed: ${responseData['message']}");
+        return ApiResponse(
+          success: false,
+          message: responseData['message'] ?? 'Failed to update round status',
+        );
+      }
+    } catch (e) {
+      print("$key update error exception: $e");
+      ToastConfig.showError(
+          context, 'Error updating round status: ${e.toString()}');
+      return ApiResponse(
+        success: false,
+        message: 'Error updating round status: ${e.toString()}',
+      );
+    }
+  }
+
+  static Future<RoundAnalyticsModel> getRoundAnalytics(
+      {required BuildContext context,
+      required String competitionId,
+      required int round,
+      required String position
+
+      // String position = 'all',
+      }) async {
+    final bearerToken =
+        SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
+    const key = "get round details";
+
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl${ApiConstants.getRoundDetails}'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $bearerToken',
+        },
+        body: jsonEncode({
+          'competitionId': competitionId,
+          'round': round,
+          'position': position,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // Parse the JSON response using the RoundAnalyticsModel
+        return RoundAnalyticsModel.fromJson(json.decode(response.body));
+      } else {
+        final errorMessage = json.decode(response.body)['message'] ??
+            'Failed to fetch round details';
+
+        ToastConfig.showError(context, errorMessage);
+
+        print("$key error: $errorMessage");
+
+        // Return an empty model or throw an exception based on your error handling strategy
+        return RoundAnalyticsModel(roundedScores: []);
+      }
+    } catch (e) {
+      print("$key error exception: $e");
+
+      ToastConfig.showError(
+          context, 'Error fetching round details: ${e.toString()}');
+
+      // Return an empty model or throw an exception based on your error handling strategy
+      return RoundAnalyticsModel(roundedScores: []);
     }
   }
 }

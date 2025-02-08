@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_app/logic/connection/connection_bloc.dart' as ct;
+import 'package:my_app/logic/event/event_bloc.dart';
 import 'package:my_app/screen/common/text_widget.dart';
 import 'package:my_app/utils/competetion_utils.dart';
 
@@ -9,10 +10,13 @@ import '../../../models/mark_up_model.dart';
 class AnimatedMarkupList extends StatefulWidget {
   final MarkUpModel? newItem;
   final int maxItems; // Maximum number of items to show in the list
-
+  final int round;
+  final String competitionId;
   const AnimatedMarkupList({
     super.key,
     required this.newItem,
+    required this.competitionId,
+    required this.round,
     this.maxItems = 5, // Default to showing 5 items
   });
 
@@ -261,37 +265,61 @@ class _AnimatedMarkupListState extends State<AnimatedMarkupList> {
                             ),
                             SizedBox(height: 8),
                             // Analytics Button with gradient
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  // Handle analytics button action
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 24, vertical: 14),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ).copyWith(
-                                  elevation:
-                                      WidgetStateProperty.resolveWith<double>(
-                                    (Set<WidgetState> states) {
-                                      if (states.contains(WidgetState.pressed))
-                                        return 2;
-                                      return 4;
-                                    },
-                                  ),
-                                ),
-                                child: Text(
-                                  "View Analytics",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
+                            BlocBuilder<EventBloc, EventState>(
+                              builder: (context, state) {
+                                return state.isLoading
+                                    ? Center(
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : SizedBox(
+                                        width: double.infinity,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            context.read<EventBloc>().add(
+                                                GetRoundAnalytics(
+                                                    competitionId:
+                                                        widget.competitionId,
+                                                    position: "all",
+                                                    round: widget.round,
+                                                    context: context));
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 24, vertical: 14),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                          ).copyWith(
+                                            elevation: WidgetStateProperty
+                                                .resolveWith<double>(
+                                              (Set<WidgetState> states) {
+                                                if (states.contains(
+                                                    WidgetState.pressed))
+                                                  return 2;
+                                                return 4;
+                                              },
+                                            ),
+                                          ),
+                                          child: Builder(builder: (context) {
+                                            // EventRepo.updateRoundStatus(
+                                            //     context: context,
+                                            //     competitionId:
+                                            //         widget.competitionId,
+                                            //     round: widget.round,
+                                            //     status: 2);
+                                            return Text(
+                                              "View Analytics",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                            );
+                                          }),
+                                        ),
+                                      );
+                              },
                             ),
                           ],
                         ),
