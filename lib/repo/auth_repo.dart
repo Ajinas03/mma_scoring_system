@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:my_app/config/constants/api_constants.dart';
@@ -9,12 +10,28 @@ import '../models/user_exist_model.dart';
 class AuthRepository {
   final String baseUrl = ApiConstants.baseUrl;
 
+  void _logApiCall(String functionName, dynamic requestBody,
+      dynamic responseBody, int? statusCode) {
+    log('''
+=== API Call Log: $functionName ===
+Request Body: ${jsonEncode(requestBody)}
+Response Status: $statusCode
+Response Body: ${jsonEncode(responseBody)}
+============================
+''');
+  }
+
   Future<Map<String, dynamic>?> logInUser({
     required String phone,
     required String password,
   }) async {
-    final url = Uri.parse(
-        baseUrl + ApiConstants.login); // Replace with your actual endpoint
+    const functionName = 'logInUser';
+    final url = Uri.parse(baseUrl + ApiConstants.login);
+
+    final requestBody = {
+      'phone': "91$phone",
+      'password': password,
+    };
 
     try {
       final response = await http.post(
@@ -23,55 +40,52 @@ class AuthRepository {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-        body: jsonEncode({
-          'phone': "91$phone",
-          'password': password,
-        }),
+        body: jsonEncode(requestBody),
       );
 
+      final responseBody = jsonDecode(response.body);
+      _logApiCall(functionName, requestBody, responseBody, response.statusCode);
+
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return jsonDecode(response.body);
+        return responseBody;
       } else {
-        // For error responses (e.g., 404, 400, etc.), return the error message
-        final errorResponse = jsonDecode(response.body);
-        return errorResponse; // Contains the 'detail' field or other error details
+        return responseBody;
       }
     } catch (e) {
-      print('HTTP Error: $e');
+      _logApiCall(functionName, requestBody, {'error': e.toString()}, null);
       return null;
     }
   }
 
-  Future<void> postUserData(
-      {required String fName,
-      required String lName,
-      required String email,
-      required String phone,
-      required String role,
-      required String passsword,
-      required String city,
-      required String state,
-      required String country,
-      required String zipCode}) async {
-    final url = Uri.parse(
-        baseUrl + ApiConstants.signUp); // Replace with your actual URL
+  Future<void> postUserData({
+    required String fName,
+    required String lName,
+    required String email,
+    required String phone,
+    required String role,
+    required String passsword,
+    required String city,
+    required String state,
+    required String country,
+    required String zipCode,
+  }) async {
+    const functionName = 'postUserData';
+    final url = Uri.parse(baseUrl + ApiConstants.signUp);
 
-    // Prepare the body data
     final bodyData = {
-      'fname': fName, // First name
-      'lname': lName, // Last name
-      'email': email, // Email address
-      'phone': "91$phone", // Phone number
-      'role': role, // Role
-      'password': passsword, // Password
-      'city': city, // City
-      'state': state, // State
-      'country': country, // Country
-      'zipcode': zipCode, // Zipcode
+      'fname': fName,
+      'lname': lName,
+      'email': email,
+      'phone': "91$phone",
+      'role': role,
+      'password': passsword,
+      'city': city,
+      'state': state,
+      'country': country,
+      'zipcode': zipCode,
     };
 
     try {
-      // Make the POST request
       final response = await http.post(
         url,
         headers: {
@@ -81,57 +95,51 @@ class AuthRepository {
         body: jsonEncode(bodyData),
       );
 
-      // Check if the response status code is 200 (success)
-      if (response.statusCode == 200) {
-        print('Success: ${response.body}');
-      } else {
-        // Handle error if status code is not 200
-        print('Error: ${response.statusCode}, ${response.body}');
-      }
+      final responseBody =
+          response.body.isNotEmpty ? jsonDecode(response.body) : null;
+      _logApiCall(functionName, bodyData, responseBody, response.statusCode);
     } catch (e) {
-      // Handle any errors during the request
-      print('Error making the request: $e');
+      _logApiCall(functionName, bodyData, {'error': e.toString()}, null);
     }
   }
 
-  Future<bool> createParticipant(
-      {required String fName,
-      required String eventId,
-      required String lName,
-      required String email,
-      required String phone,
-      required String role,
-      DateTime? dob,
-      double? weight,
-      String? gender,
-      required String city,
-      required String state,
-      required String country,
-      required String zipCode}) async {
-    final url = Uri.parse(baseUrl +
-        ApiConstants.createParticipant); // Replace with your actual URL
+  Future<bool> createParticipant({
+    required String fName,
+    required String eventId,
+    required String lName,
+    required String email,
+    required String phone,
+    required String role,
+    DateTime? dob,
+    double? weight,
+    String? gender,
+    required String city,
+    required String state,
+    required String country,
+    required String zipCode,
+  }) async {
+    const functionName = 'createParticipant';
+    final url = Uri.parse(baseUrl + ApiConstants.createParticipant);
 
-    // Prepare the body data
     final bodyData = {
       'eventId': eventId,
-      'fname': fName, // First name
-      'lname': lName, // Last name
-      'email': email, // Email address
-      'phone': "91$phone", // Phone number
-      'role': role, // Role
-      'city': city, // City
-      'state': state, // State
-      'country': country, // Country
-      'zipcode': zipCode, // Zipcode
-      "dob": dob.toString(),
-      "gender": gender,
-      "weight": weight,
+      'fname': fName,
+      'lname': lName,
+      'email': email,
+      'phone': "91$phone",
+      'role': role,
+      'city': city,
+      'state': state,
+      'country': country,
+      'zipcode': zipCode,
+      'dob': dob?.toString(),
+      'gender': gender,
+      'weight': weight,
     };
 
     try {
       final bearerToken =
           SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
-      // Make the POST request
       final response = await http.post(
         url,
         headers: {
@@ -142,19 +150,13 @@ class AuthRepository {
         body: jsonEncode(bodyData),
       );
 
-      // Check if the response status code is 200 (success)
-      if (response.statusCode == 200) {
-        print('Create participant  Success: ${response.body}');
-        return true;
-      } else {
-        // Handle error if status code is not 200
-        print(
-            'Create participant  Error: ${response.statusCode}, ${response.body}  bodyy ::: $bodyData');
-        return false;
-      }
+      final responseBody =
+          response.body.isNotEmpty ? jsonDecode(response.body) : null;
+      _logApiCall(functionName, bodyData, responseBody, response.statusCode);
+
+      return response.statusCode == 200;
     } catch (e) {
-      // Handle any errors during the request
-      print('Create participant   Error making the request: $e');
+      _logApiCall(functionName, bodyData, {'error': e.toString()}, null);
       return false;
     }
   }
@@ -162,7 +164,9 @@ class AuthRepository {
   Future<UserExistModel?> checkUserExist({
     required String phone,
   }) async {
+    const functionName = 'checkUserExist';
     final url = Uri.parse("$baseUrl${ApiConstants.checkUserExist}91$phone");
+    final requestParams = {'phone': "91$phone"};
 
     try {
       final response = await http.get(
@@ -173,16 +177,17 @@ class AuthRepository {
         },
       );
 
+      final responseBody =
+          response.body.isNotEmpty ? jsonDecode(response.body) : null;
+      _logApiCall(
+          functionName, requestParams, responseBody, response.statusCode);
+
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return UserExistModel.fromJson(jsonDecode(response.body));
-      } else {
-        // For error responses, print the error and return null
-        print(
-            'Check User Exist Error: ${response.statusCode}, ${response.body}');
-        return null;
+        return UserExistModel.fromJson(responseBody);
       }
+      return null;
     } catch (e) {
-      print('HTTP Error in checkUserExist: $e');
+      _logApiCall(functionName, requestParams, {'error': e.toString()}, null);
       return null;
     }
   }
@@ -195,6 +200,7 @@ class AuthRepository {
     required String lname,
     required String role,
   }) async {
+    const functionName = 'addParticipantToEvent';
     final url = Uri.parse(baseUrl + ApiConstants.addParticipantToEvent);
 
     final bodyData = {
@@ -219,17 +225,13 @@ class AuthRepository {
         body: jsonEncode(bodyData),
       );
 
-      if (response.statusCode == 200) {
-        print('Add Participant to Event Success: ${response.body}');
-        return true;
-      } else {
-        print(
-          'Add Participant to Event Error: ${response.statusCode}, ${response.body}  body : $bodyData , url : $url',
-        );
-        return false;
-      }
+      final responseBody =
+          response.body.isNotEmpty ? jsonDecode(response.body) : null;
+      _logApiCall(functionName, bodyData, responseBody, response.statusCode);
+
+      return response.statusCode == 200;
     } catch (e) {
-      print('Add Participant to Event Request Error: $e');
+      _logApiCall(functionName, bodyData, {'error': e.toString()}, null);
       return false;
     }
   }

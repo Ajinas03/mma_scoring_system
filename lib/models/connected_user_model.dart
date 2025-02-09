@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final connectedUserModel = connectedUserModelFromJson(jsonString);
-
 import 'dart:convert';
 
 ConnectedUserModel connectedUserModelFromJson(String str) =>
@@ -13,21 +9,25 @@ String connectedUserModelToJson(ConnectedUserModel data) =>
 class ConnectedUserModel {
   String type;
   Details details;
+  bool sessionActive;
 
   ConnectedUserModel({
     required this.type,
     required this.details,
+    required this.sessionActive,
   });
 
   factory ConnectedUserModel.fromJson(Map<String, dynamic> json) =>
       ConnectedUserModel(
         type: json["type"],
         details: Details.fromJson(json["details"]),
+        sessionActive: json["sessionActive"],
       );
 
   Map<String, dynamic> toJson() => {
         "type": type,
         "details": details.toJson(),
+        "sessionActive": sessionActive,
       };
 }
 

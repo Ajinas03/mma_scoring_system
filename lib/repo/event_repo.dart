@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,12 +18,11 @@ import '../models/round_analytics_model.dart';
 class EventRepo {
   static const String baseUrl = ApiConstants.baseUrl;
 
-  // Event creation model
-
   static Future<ApiResponse> createEvent({
     required BuildContext context,
     required CreateEventRequest event,
   }) async {
+    const key = "createEvent";
     final bearerToken =
         SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
     try {
@@ -35,10 +35,11 @@ class EventRepo {
         body: jsonEncode(event.toJson()),
       );
 
-      // Parse response
+      log("$key response: ${response.body}");
       final responseData = jsonDecode(response.body);
 
       if (response.statusCode != 201 || response.statusCode != 200) {
+        log("$key success: created event");
         ToastConfig.showSuccess(
             context, responseData['message'] ?? 'Failed to create event');
 
@@ -50,6 +51,7 @@ class EventRepo {
           data: responseData,
         );
       } else {
+        log("$key error: failed to create event");
         ToastConfig.showSuccess(context, 'Event created successfully');
         return ApiResponse(
           success: false,
@@ -57,6 +59,7 @@ class EventRepo {
         );
       }
     } catch (e) {
+      log("$key error: ${e.toString()}");
       ToastConfig.showError(context, 'Error creating event: ${e.toString()}');
       return ApiResponse(
         success: false,
@@ -66,6 +69,7 @@ class EventRepo {
   }
 
   static Future<List<EventRespModel>> getEvents() async {
+    const key = "getEvents";
     final bearerToken =
         SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
     try {
@@ -77,42 +81,46 @@ class EventRepo {
         },
       );
 
+      log("$key response: ${response.body}");
+
       if (response.statusCode == 200) {
+        log("$key success: fetched events");
         return eventRespModelFromJson(response.body);
       } else {
         final errorMessage =
             json.decode(response.body)['message'] ?? 'Failed to fetch events';
-        print("get event error : $errorMessage   $response");
+        log("$key error: $errorMessage");
         return [];
       }
     } on FormatException {
+      log("$key error: FormatException");
       return [];
     } catch (e) {
-      print("get event error  exception : $e  ");
-
+      log("$key error: ${e.toString()}");
       return [];
     }
   }
 
-  // New method to get participants
   static Future<GetParicipantsModel> getParticipants(String eventId) async {
+    const key = "getParticipants";
     final bearerToken =
         SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
     try {
       final response = await http.get(
-        Uri.parse(
-            '$baseUrl${ApiConstants.getParticipants}$eventId'), // Add getParticipants endpoint in ApiConstants
+        Uri.parse('$baseUrl${ApiConstants.getParticipants}$eventId'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $bearerToken',
         },
       );
 
+      log("$key response: ${response.body}");
+
       if (response.statusCode == 200) {
+        log("$key success: fetched participants");
         return getParicipantsModelFromJson(response.body);
       } else {
-        print("get participants error : ${response.body}");
-        // Return empty model if API call fails
+        log("$key error: ${response.body}");
         return GetParicipantsModel(
           eventId: eventId,
           players: [],
@@ -121,6 +129,7 @@ class EventRepo {
         );
       }
     } on FormatException {
+      log("$key error: FormatException");
       return GetParicipantsModel(
         eventId: eventId,
         players: [],
@@ -128,7 +137,7 @@ class EventRepo {
         referees: [],
       );
     } catch (e) {
-      print("get participants error : $e");
+      log("$key error: ${e.toString()}");
       return GetParicipantsModel(
         eventId: eventId,
         players: [],
@@ -137,8 +146,6 @@ class EventRepo {
       );
     }
   }
-
-// New method to create a match/bout
 
   Future<ApiResponse> createMatch({
     required BuildContext context,
@@ -154,13 +161,12 @@ class EventRepo {
     required String cornerBRefereeName,
     required String cornerCRefereeName,
   }) async {
+    const key = "createMatch";
     final bearerToken =
         SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
-    final key = "comptetion create";
     try {
       final response = await http.post(
-        Uri.parse(
-            '$baseUrl${ApiConstants.createMatch}'), // Add createMatch endpoint in ApiConstants
+        Uri.parse('$baseUrl${ApiConstants.createMatch}'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $bearerToken',
@@ -191,29 +197,28 @@ class EventRepo {
         }),
       );
 
+      log("$key response: ${response.body}");
       final responseData = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
+        log("$key success: match created");
         ToastConfig.showSuccess(context, 'Match created successfully');
-
-        print("$key created successfully ");
         return ApiResponse(
           success: true,
           message: 'Match created successfully',
           data: responseData,
         );
       } else {
+        log("$key error: ${responseData['message']}");
         ToastConfig.showError(
             context, responseData['message'] ?? 'Failed to create match');
-        print("$key create failed " + responseData['message']);
-
         return ApiResponse(
           success: false,
           message: responseData['message'] ?? 'Failed to create match',
         );
       }
     } catch (e) {
-      print("$key create error exception $e ");
+      log("$key error: ${e.toString()}");
       ToastConfig.showError(context, 'Error creating match: ${e.toString()}');
       return ApiResponse(
         success: false,
@@ -224,6 +229,7 @@ class EventRepo {
 
   static Future<List<CompetetionModel>> getCompetitionDetails(
       String eventId) async {
+    const key = "getCompetitionDetails";
     final bearerToken =
         SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
     try {
@@ -235,14 +241,17 @@ class EventRepo {
         },
       );
 
+      log("$key response: ${response.body}");
+
       if (response.statusCode == 200) {
+        log("$key success: fetched competition details");
         return competetionModelFromJson(response.body);
       } else {
-        print("get competition details error : ${response.body}");
+        log("$key error: ${response.body}");
         return [];
       }
     } catch (e) {
-      print("get competition details error : $e");
+      log("$key error: ${e.toString()}");
       return [];
     }
   }
@@ -253,9 +262,9 @@ class EventRepo {
     required int round,
     required int status,
   }) async {
+    const key = "updateRoundStatus";
     final bearerToken =
         SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
-    const key = "update round status";
 
     try {
       final queryParameters = {
@@ -274,27 +283,28 @@ class EventRepo {
         },
       );
 
+      log("$key response: ${response.body}");
       final responseData = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
+        log("$key success: round status updated");
         ToastConfig.showSuccess(context, 'Round status updated successfully');
-        print("$key updated successfully  resp ${response.body}");
         return ApiResponse(
           success: true,
           message: 'Round status updated successfully',
           data: responseData,
         );
       } else {
+        log("$key error: ${responseData['message']}");
         ToastConfig.showError(context,
             responseData['message'] ?? 'Failed to update round status');
-        print("$key update failed: ${responseData['message']}");
         return ApiResponse(
           success: false,
           message: responseData['message'] ?? 'Failed to update round status',
         );
       }
     } catch (e) {
-      print("$key update error exception: $e");
+      log("$key error: ${e.toString()}");
       ToastConfig.showError(
           context, 'Error updating round status: ${e.toString()}');
       return ApiResponse(
@@ -304,17 +314,15 @@ class EventRepo {
     }
   }
 
-  static Future<RoundAnalyticsModel> getRoundAnalytics(
-      {required BuildContext context,
-      required String competitionId,
-      required int round,
-      required String position
-
-      // String position = 'all',
-      }) async {
+  static Future<RoundAnalyticsModel> getRoundAnalytics({
+    required BuildContext context,
+    required String competitionId,
+    required int round,
+    required String position,
+  }) async {
+    const key = "getRoundAnalytics";
     final bearerToken =
         SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
-    const key = "get round details";
 
     try {
       final response = await http.post(
@@ -330,27 +338,26 @@ class EventRepo {
         }),
       );
 
+      log("$key response: ${response.body}  , body  :: ${jsonEncode({
+            'competitionId': competitionId,
+            'round': round,
+            'position': position,
+          })}");
+
       if (response.statusCode == 200) {
-        // Parse the JSON response using the RoundAnalyticsModel
+        log("$key success: fetched round analytics");
         return RoundAnalyticsModel.fromJson(json.decode(response.body));
       } else {
         final errorMessage = json.decode(response.body)['message'] ??
             'Failed to fetch round details';
-
+        log("$key error: $errorMessage");
         ToastConfig.showError(context, errorMessage);
-
-        print("$key error: $errorMessage");
-
-        // Return an empty model or throw an exception based on your error handling strategy
         return RoundAnalyticsModel(roundedScores: []);
       }
     } catch (e) {
-      print("$key error exception: $e");
-
+      log("$key error: ${e.toString()}");
       ToastConfig.showError(
           context, 'Error fetching round details: ${e.toString()}');
-
-      // Return an empty model or throw an exception based on your error handling strategy
       return RoundAnalyticsModel(roundedScores: []);
     }
   }

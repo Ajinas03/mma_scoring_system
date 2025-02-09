@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class RoundAnalyticsModel {
   List<RoundedScore> roundedScores;
 
@@ -24,11 +22,10 @@ class RoundedScore {
   String position;
   int redTotalRoundedScore;
   int blueTotalRoundedScore;
-  List<dynamic> totalPointRed;
-  List<dynamic> totalPointBlue;
+  List<int> totalPointRed;
+  List<int> totalPointBlue;
   String won;
   String wonType;
-  List<MarkDetail> markDetails;
 
   RoundedScore({
     required this.position,
@@ -38,7 +35,6 @@ class RoundedScore {
     required this.totalPointBlue,
     required this.won,
     required this.wonType,
-    required this.markDetails,
   });
 
   factory RoundedScore.fromJson(Map<String, dynamic> json) {
@@ -46,13 +42,10 @@ class RoundedScore {
       position: json["position"]?.toString() ?? '',
       redTotalRoundedScore: _safeParseInt(json["redTotalRoundedScore"]),
       blueTotalRoundedScore: _safeParseInt(json["blueTotalRoundedScore"]),
-      totalPointRed: _safeParseList(json["totalPointRed"]),
-      totalPointBlue: _safeParseList(json["totalPointBlue"]),
+      totalPointRed: _parseIntList(json["totalPointRed"]),
+      totalPointBlue: _parseIntList(json["totalPointBlue"]),
       won: json["won"]?.toString() ?? '',
       wonType: json["wonType"]?.toString() ?? '',
-      markDetails: (json["markDetails"] as List)
-          .map((x) => MarkDetail.fromJson(x))
-          .toList(),
     );
   }
 
@@ -64,7 +57,6 @@ class RoundedScore {
         "totalPointBlue": totalPointBlue,
         "won": won,
         "wonType": wonType,
-        "markDetails": markDetails.map((x) => x.toJson()).toList(),
       };
 
   // Helper method to safely parse integers
@@ -75,53 +67,11 @@ class RoundedScore {
     return 0;
   }
 
-  // Helper method to safely parse lists
-  static List<dynamic> _safeParseList(dynamic value) {
-    if (value is List) return value;
+  // Helper method to parse list of integers
+  static List<int> _parseIntList(dynamic value) {
+    if (value is List) {
+      return value.map((item) => _safeParseInt(item)).toList();
+    }
     return [];
   }
-}
-
-class MarkDetail {
-  int mark;
-  int timeRemaining;
-  int time;
-  bool ismarkedToRed;
-
-  MarkDetail({
-    required this.mark,
-    required this.timeRemaining,
-    required this.time,
-    required this.ismarkedToRed,
-  });
-
-  factory MarkDetail.fromJson(Map<String, dynamic> json) {
-    return MarkDetail(
-      mark: _safeParseInt(json["mark"]),
-      timeRemaining: _safeParseInt(json["time_remaining"]),
-      time: _safeParseInt(json["time"]),
-      ismarkedToRed: json["ismarkedToRed"] ?? false,
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-        "mark": mark,
-        "time_remaining": timeRemaining,
-        "time": time,
-        "ismarkedToRed": ismarkedToRed,
-      };
-
-  // Helper method to safely parse integers
-  static int _safeParseInt(dynamic value) {
-    if (value is int) return value;
-    if (value is String) return int.tryParse(value) ?? 0;
-    if (value is double) return value.toInt();
-    return 0;
-  }
-}
-
-// Usage example
-RoundAnalyticsModel parseRoundAnalytics(String jsonString) {
-  final Map<String, dynamic> jsonMap = json.decode(jsonString);
-  return RoundAnalyticsModel.fromJson(jsonMap);
 }

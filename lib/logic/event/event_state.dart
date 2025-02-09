@@ -6,8 +6,10 @@ class EventState {
       required this.events,
       this.getParicipantsModel,
       this.competetionModel,
+      this.isAnalyticsLoading,
       this.roundAnalyticsModel});
   bool isLoading;
+  bool? isAnalyticsLoading;
   List<EventRespModel> events;
   List<CompetetionModel>? competetionModel;
   GetParicipantsModel? getParicipantsModel;
@@ -15,5 +17,6 @@ class EventState {
 }
 
 final class EventInitial extends EventState {
-  EventInitial() : super(isLoading: false, events: []);
+  EventInitial()
+      : super(isLoading: false, events: [], isAnalyticsLoading: false);
 }

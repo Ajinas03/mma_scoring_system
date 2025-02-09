@@ -84,8 +84,10 @@ class EventBloc extends Bloc<EventEvent, EventState> {
 
       if (event is GetRoundAnalytics) {
         emit(EventState(
-            isLoading: true,
+            isLoading: false,
+            isAnalyticsLoading: true,
             events: state.events,
+            competetionModel: state.competetionModel,
             getParicipantsModel: state.getParicipantsModel));
 
         final analytics = await EventRepo.getRoundAnalytics(
@@ -94,11 +96,23 @@ class EventBloc extends Bloc<EventEvent, EventState> {
             round: event.round,
             position: event.position);
 
-        pushScreen(
-            event.context, RoundAnalyticsDisplay(roundAnalytics: analytics));
+        if (event.isFromMark) {
+          pushReplaceScreen(
+              event.context,
+              RoundAnalyticsDisplay(
+                eventId: event.eventId,
+              ));
+        } else {
+          pushScreen(
+              event.context,
+              RoundAnalyticsDisplay(
+                eventId: event.eventId,
+              ));
+        }
 
         emit(EventState(
             isLoading: false,
+            isAnalyticsLoading: false,
             events: state.events,
             roundAnalyticsModel: analytics,
             getParicipantsModel: state.getParicipantsModel,

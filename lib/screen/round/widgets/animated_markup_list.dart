@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_app/config/shared_prefs_config.dart';
 import 'package:my_app/logic/connection/connection_bloc.dart' as ct;
 import 'package:my_app/logic/event/event_bloc.dart';
+import 'package:my_app/repo/event_repo.dart';
 import 'package:my_app/screen/common/text_widget.dart';
 import 'package:my_app/utils/competetion_utils.dart';
 
@@ -12,9 +14,11 @@ class AnimatedMarkupList extends StatefulWidget {
   final int maxItems; // Maximum number of items to show in the list
   final int round;
   final String competitionId;
+  final String eventId;
   const AnimatedMarkupList({
     super.key,
     required this.newItem,
+    required this.eventId,
     required this.competitionId,
     required this.round,
     this.maxItems = 5, // Default to showing 5 items
@@ -275,11 +279,29 @@ class _AnimatedMarkupListState extends State<AnimatedMarkupList> {
                                         width: double.infinity,
                                         child: ElevatedButton(
                                           onPressed: () {
+                                            EventRepo.updateRoundStatus(
+                                                context: context,
+                                                competitionId:
+                                                    widget.competitionId,
+                                                round: widget.round,
+                                                status: 2);
+
                                             context.read<EventBloc>().add(
                                                 GetRoundAnalytics(
-                                                    competitionId:
-                                                        widget.competitionId,
-                                                    position: "all",
+                                                    isFromMark: true,
+                                                    eventId: widget.eventId,
+                                                    competitionId: widget
+                                                        .competitionId,
+                                                    position: SharedPrefsConfig
+                                                                .getString(
+                                                                    SharedPrefsConfig
+                                                                        .keyUserRole) ==
+                                                            "jury"
+                                                        ? "all"
+                                                        : SharedPrefsConfig
+                                                            .getString(
+                                                                SharedPrefsConfig
+                                                                    .keyUserRole),
                                                     round: widget.round,
                                                     context: context));
                                           },
@@ -301,22 +323,14 @@ class _AnimatedMarkupListState extends State<AnimatedMarkupList> {
                                               },
                                             ),
                                           ),
-                                          child: Builder(builder: (context) {
-                                            // EventRepo.updateRoundStatus(
-                                            //     context: context,
-                                            //     competitionId:
-                                            //         widget.competitionId,
-                                            //     round: widget.round,
-                                            //     status: 2);
-                                            return Text(
-                                              "View Analytics",
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            );
-                                          }),
+                                          child: Text(
+                                            "View Analytics",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
                                       );
                               },

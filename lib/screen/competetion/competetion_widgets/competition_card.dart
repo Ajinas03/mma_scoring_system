@@ -5,7 +5,7 @@ import '../../../models/competetion_model.dart';
 class CompetitionCard extends StatelessWidget {
   final CompetetionModel? competition;
 
-  const CompetitionCard({super.key, required this.competition});
+const CompetitionCard({super.key, required this.competition});
 
   @override
   Widget build(BuildContext context) {

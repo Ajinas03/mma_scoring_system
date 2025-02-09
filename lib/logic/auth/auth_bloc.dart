@@ -50,6 +50,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               userRole: authModel?.role ?? "",
               accessToken: authModel?.token ?? "",
             );
+
+            event.context.read<EventBloc>().add(GetEvent());
+
             ToastConfig.showSuccess(event.context, "Login Success");
 
             // Navigate to HomeScreen after login

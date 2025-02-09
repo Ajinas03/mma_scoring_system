@@ -8,14 +8,23 @@ import 'package:my_app/screen/round/round_screen.dart';
 import '../../logic/event/event_bloc.dart';
 import 'competetion_widgets/competition_card.dart';
 
-class CompetetionScreen extends StatelessWidget {
+class CompetetionScreen extends StatefulWidget {
   final String eventId;
   const CompetetionScreen({super.key, required this.eventId});
 
   @override
-  Widget build(BuildContext context) {
-    context.read<EventBloc>().add(GetCompetetion(eventId: eventId));
+  State<CompetetionScreen> createState() => _CompetetionScreenState();
+}
 
+class _CompetetionScreenState extends State<CompetetionScreen> {
+  @override
+  void initState() {
+    context.read<EventBloc>().add(GetCompetetion(eventId: widget.eventId));
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -41,8 +50,12 @@ class CompetetionScreen extends StatelessWidget {
                       itemBuilder: (context, index) {
                         return InkWell(
                           onTap: () {
-                            pushScreen(context,
-                                RoundScreen(competition: competitions?[index]));
+                            pushScreen(
+                                context,
+                                RoundScreen(
+                                  eventId: widget.eventId,
+                                  index: index,
+                                ));
                           },
                           child: CompetitionCard(
                               competition: competitions?[index]),

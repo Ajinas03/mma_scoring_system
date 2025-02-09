@@ -20,12 +20,16 @@ class GetEventParticipants extends EventEvent {
 class GetRoundAnalytics extends EventEvent {
   BuildContext context;
   String competitionId;
+  bool isFromMark;
   int round;
   String position;
+  String eventId;
 
   GetRoundAnalytics(
       {required this.competitionId,
+      required this.isFromMark,
       required this.position,
+      required this.eventId,
       required this.round,
       required this.context});
 }
