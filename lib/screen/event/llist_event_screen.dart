@@ -14,7 +14,10 @@ class AddRoundScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<EventBloc>().add(GetEvent());
+    Future.delayed(Duration(seconds: 1), () async {
+      print("get event delayed called");
+      context.read<EventBloc>().add(GetEvent());
+    });
     return Scaffold(
       appBar: primaryAppBar(title: "Events"),
       floatingActionButton: FloatingActionButton(

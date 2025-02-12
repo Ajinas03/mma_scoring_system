@@ -147,6 +147,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           // pushReplaceScreen(event.context, MainScreen());
           emit(AuthState(isLoading: false));
           print("create participant Success  $resp");
+
           ToastConfig.showSuccess(event.context, "create participant Success");
           event.context
               .read<EventBloc>()

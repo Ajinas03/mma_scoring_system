@@ -1,4 +1,4 @@
-class ApiConstants {
+class ApiConst {
   // static const String baseUrl = 'wss://your-socket-server.com';
   // static const String eventsEndpoint = '/events';
   // static const String scoringEndpoint = '/scoring';

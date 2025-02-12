@@ -9,6 +9,7 @@ import 'package:my_app/config/shared_prefs_config.dart';
 import 'package:my_app/config/toast_config.dart';
 import 'package:my_app/logic/event/event_bloc.dart';
 
+import '../models/all_round_analytics_model.dart';
 import '../models/competetion_model.dart';
 import '../models/create_event_model.dart';
 import '../models/event_resp_model.dart';
@@ -16,7 +17,7 @@ import '../models/get_participants_model.dart';
 import '../models/round_analytics_model.dart';
 
 class EventRepo {
-  static const String baseUrl = ApiConstants.baseUrl;
+  static const String baseUrl = ApiConst.baseUrl;
 
   static Future<ApiResponse> createEvent({
     required BuildContext context,
@@ -27,7 +28,7 @@ class EventRepo {
         SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl${ApiConstants.createEvent}'),
+        Uri.parse('$baseUrl${ApiConst.createEvent}'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $bearerToken',
@@ -74,14 +75,14 @@ class EventRepo {
         SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
     try {
       final response = await http.get(
-        Uri.parse(baseUrl + ApiConstants.getEvents),
+        Uri.parse(baseUrl + ApiConst.getEvents),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $bearerToken',
         },
       );
 
-      log("$key response: ${response.body}");
+      log("$key response: ${response.body}   : bearer tokennn $bearerToken");
 
       if (response.statusCode == 200) {
         log("$key success: fetched events");
@@ -107,7 +108,7 @@ class EventRepo {
         SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl${ApiConstants.getParticipants}$eventId'),
+        Uri.parse('$baseUrl${ApiConst.getParticipants}$eventId'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $bearerToken',
@@ -166,7 +167,7 @@ class EventRepo {
         SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl${ApiConstants.createMatch}'),
+        Uri.parse('$baseUrl${ApiConst.createMatch}'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $bearerToken',
@@ -274,7 +275,7 @@ class EventRepo {
       };
 
       final response = await http.put(
-        Uri.parse('$baseUrl${ApiConstants.updateRoundStatus}').replace(
+        Uri.parse('$baseUrl${ApiConst.updateRoundStatus}').replace(
           queryParameters: queryParameters,
         ),
         headers: {
@@ -326,7 +327,7 @@ class EventRepo {
 
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl${ApiConstants.getRoundDetails}'),
+        Uri.parse('$baseUrl${ApiConst.getRoundDetails}'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $bearerToken',
@@ -359,6 +360,49 @@ class EventRepo {
       ToastConfig.showError(
           context, 'Error fetching round details: ${e.toString()}');
       return RoundAnalyticsModel(roundedScores: []);
+    }
+  }
+
+  static Future<AllRoundAnalytics> getAllRoundAnalytics({
+    required BuildContext context,
+    required String competitionId,
+    required int round,
+  }) async {
+    const key = "getAllRoundAnalytics";
+    final bearerToken =
+        SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);
+
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl${ApiConst.getRoundDetails}'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $bearerToken',
+        },
+        body: jsonEncode({
+          'competitionId': competitionId,
+          'round': round,
+          'position': 'all',
+        }),
+      );
+
+      log("$key response: ${response.body}");
+
+      if (response.statusCode == 200) {
+        log("$key success: fetched all round analytics");
+        return allRoundAnalyticsFromJson(response.body);
+      } else {
+        final errorMessage = json.decode(response.body)['message'] ??
+            'Failed to fetch round details';
+        log("$key error: $errorMessage");
+        ToastConfig.showError(context, errorMessage);
+        return AllRoundAnalytics(roundsDetails: []);
+      }
+    } catch (e) {
+      log("$key error: ${e.toString()}");
+      ToastConfig.showError(
+          context, 'Error fetching round details: ${e.toString()}');
+      return AllRoundAnalytics(roundsDetails: []);
     }
   }
 }

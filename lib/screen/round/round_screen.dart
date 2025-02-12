@@ -70,6 +70,20 @@ class _RoundScreenState extends State<RoundScreen> with WidgetsBindingObserver {
         return true;
       },
       child: Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: BlocBuilder<EventBloc, EventState>(
+          builder: (context, evState) {
+            return 
+            
+            
+            
+            
+            
+            
+            FloatingActionButton.extended(
+                onPressed: () {}, label: Text("Take Descision"));
+          },
+        ),
         appBar: secondaryAppBar(
           title: "Competition Rounds",
           // onLeading: () async {
