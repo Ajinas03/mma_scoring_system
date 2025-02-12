@@ -1,78 +1,85 @@
-// To parse this JSON data, do
-//
-//     final getParicipantsModel = getParicipantsModelFromJson(jsonString);
-
 import 'dart:convert';
 
-GetParicipantsModel getParicipantsModelFromJson(String str) =>
-    GetParicipantsModel.fromJson(json.decode(str));
+GetParicipantsModel? getParicipantsModelFromJson(String str) =>
+    str.isNotEmpty ? GetParicipantsModel.fromJson(json.decode(str)) : null;
 
-String getParicipantsModelToJson(GetParicipantsModel data) =>
-    json.encode(data.toJson());
+String getParicipantsModelToJson(GetParicipantsModel? data) =>
+    json.encode(data?.toJson() ?? {});
 
 class GetParicipantsModel {
-  String eventId;
-  List<Jury> players;
-  List<Jury> jury;
-  List<Jury> referees;
+  String? eventId;
+  List<Jury>? players;
+  List<Jury>? jury;
+  List<Jury>? referees;
 
   GetParicipantsModel({
-    required this.eventId,
-    required this.players,
-    required this.jury,
-    required this.referees,
+    this.eventId,
+    this.players,
+    this.jury,
+    this.referees,
   });
 
   factory GetParicipantsModel.fromJson(Map<String, dynamic> json) =>
       GetParicipantsModel(
         eventId: json["eventId"],
-        players: List<Jury>.from(json["players"].map((x) => Jury.fromJson(x))),
-        jury: List<Jury>.from(json["jury"].map((x) => Jury.fromJson(x))),
-        referees:
-            List<Jury>.from(json["referees"].map((x) => Jury.fromJson(x))),
+        players: json["players"] != null
+            ? List<Jury>.from(json["players"].map((x) => Jury.fromJson(x)))
+            : null,
+        jury: json["jury"] != null
+            ? List<Jury>.from(json["jury"].map((x) => Jury.fromJson(x)))
+            : null,
+        referees: json["referees"] != null
+            ? List<Jury>.from(json["referees"].map((x) => Jury.fromJson(x)))
+            : null,
       );
 
   Map<String, dynamic> toJson() => {
         "eventId": eventId,
-        "players": List<dynamic>.from(players.map((x) => x.toJson())),
-        "jury": List<dynamic>.from(jury.map((x) => x.toJson())),
-        "referees": List<dynamic>.from(referees.map((x) => x.toJson())),
+        "players": players != null
+            ? List<dynamic>.from(players!.map((x) => x.toJson()))
+            : null,
+        "jury": jury != null
+            ? List<dynamic>.from(jury!.map((x) => x.toJson()))
+            : null,
+        "referees": referees != null
+            ? List<dynamic>.from(referees!.map((x) => x.toJson()))
+            : null,
       };
 }
 
 class Jury {
-  String phone;
-  String fname;
-  String lname;
-  String username;
+  String? phone;
+  String? fname;
+  String? lname;
+  String? username;
   String? userId;
-  String eventId;
-  String role;
-  String city;
-  String state;
-  String country;
-  String email;
-  DateTime dob;
-  String gender;
-  double weight;
-  String zipcode;
+  String? eventId;
+  String? role;
+  String? city;
+  String? state;
+  String? country;
+  String? email;
+  DateTime? dob;
+  String? gender;
+  double? weight;
+  String? zipcode;
 
   Jury({
-    required this.phone,
-    required this.fname,
-    required this.lname,
-    required this.username,
-    required this.userId,
-    required this.eventId,
-    required this.role,
-    required this.city,
-    required this.state,
-    required this.country,
-    required this.email,
-    required this.dob,
-    required this.gender,
-    required this.weight,
-    required this.zipcode,
+    this.phone,
+    this.fname,
+    this.lname,
+    this.username,
+    this.userId,
+    this.eventId,
+    this.role,
+    this.city,
+    this.state,
+    this.country,
+    this.email,
+    this.dob,
+    this.gender,
+    this.weight,
+    this.zipcode,
   });
 
   factory Jury.fromJson(Map<String, dynamic> json) => Jury(
@@ -80,16 +87,16 @@ class Jury {
         fname: json["fname"],
         lname: json["lname"],
         username: json["username"],
-        userId: json["userId"] ?? "",
+        userId: json["userId"],
         eventId: json["eventId"],
         role: json["role"],
         city: json["city"],
         state: json["state"],
         country: json["country"],
         email: json["email"],
-        dob: DateTime.parse(json["dob"]),
+        dob: json["dob"] != null ? DateTime.parse(json["dob"]) : null,
         gender: json["gender"],
-        weight: json["weight"],
+        weight: json["weight"]?.toDouble(),
         zipcode: json["zipcode"],
       );
 
@@ -105,7 +112,7 @@ class Jury {
         "state": state,
         "country": country,
         "email": email,
-        "dob": dob.toIso8601String(),
+        "dob": dob?.toIso8601String(),
         "gender": gender,
         "weight": weight,
         "zipcode": zipcode,

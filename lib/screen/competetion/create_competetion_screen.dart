@@ -76,8 +76,8 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
     print('Competition created: $competition');
   }
 
-  String _getUsername(Jury jury) {
-    return jury.username;
+  String _getUsername(Jury? jury) {
+    return jury?.username ?? "";
   }
 
   String? _getUsernameById(List<Jury> juryList, String? id) {
@@ -124,9 +124,9 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
                       referees: [],
                     );
             final playerUsernames =
-                participants.players.map(_getUsername).toList();
+                participants.players?.map(_getUsername).toList();
             final refereeUsernames =
-                participants.referees.map(_getUsername).toList();
+                participants.referees?.map(_getUsername).toList();
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -139,16 +139,16 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
                     Expanded(
                       child: CustomDropdown(
                         label: 'Red Corner',
-                        items: playerUsernames,
+                        items: playerUsernames ?? [],
                         value: _getUsernameById(
-                            participants.players, redCornerPlayerId),
+                            participants.players ?? [], redCornerPlayerId),
                         onChanged: (value) => setState(() {
                           if (value != null) {
-                            final player = participants.players.firstWhere(
+                            final player = participants.players?.firstWhere(
                               (p) => _getUsername(p) == value,
                             );
-                            redCornerPlayerId = player.userId;
-                            redCornerPlayerName = player.username;
+                            redCornerPlayerId = player?.userId;
+                            redCornerPlayerName = player?.username;
                           }
                           errorMessage = null;
                         }),
@@ -168,16 +168,16 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
                     Expanded(
                       child: CustomDropdown(
                         label: 'Blue Corner',
-                        items: playerUsernames,
+                        items: playerUsernames ?? [],
                         value: _getUsernameById(
-                            participants.players, blueCornerPlayerId),
+                            participants.players ?? [], blueCornerPlayerId),
                         onChanged: (value) => setState(() {
                           if (value != null) {
-                            final player = participants.players.firstWhere(
+                            final player = participants.players?.firstWhere(
                               (p) => _getUsername(p) == value,
                             );
-                            blueCornerPlayerId = player.userId;
-                            blueCornerPlayerName = player.username;
+                            blueCornerPlayerId = player?.userId;
+                            blueCornerPlayerName = player?.username;
                           }
                           errorMessage = null;
                         }),
@@ -190,16 +190,16 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
 
                 CustomDropdown(
                   label: 'Corner A Referee',
-                  items: refereeUsernames,
-                  value:
-                      _getUsernameById(participants.referees, cornerARefereeId),
+                  items: refereeUsernames ?? [],
+                  value: _getUsernameById(
+                      participants.referees ?? [], cornerARefereeId),
                   onChanged: (value) => setState(() {
                     if (value != null) {
-                      final referee = participants.referees.firstWhere(
+                      final referee = participants.referees?.firstWhere(
                         (r) => _getUsername(r) == value,
                       );
-                      cornerARefereeId = referee.userId;
-                      cornerARefereeName = referee.username;
+                      cornerARefereeId = referee?.userId;
+                      cornerARefereeName = referee?.username;
                     }
                     errorMessage = null;
                   }),
@@ -208,16 +208,16 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
 
                 CustomDropdown(
                   label: 'Corner B Referee',
-                  items: refereeUsernames,
-                  value:
-                      _getUsernameById(participants.referees, cornerBRefereeId),
+                  items: refereeUsernames ?? [],
+                  value: _getUsernameById(
+                      participants.referees ?? [], cornerBRefereeId),
                   onChanged: (value) => setState(() {
                     if (value != null) {
-                      final referee = participants.referees.firstWhere(
+                      final referee = participants.referees?.firstWhere(
                         (r) => _getUsername(r) == value,
                       );
-                      cornerBRefereeId = referee.userId;
-                      cornerBRefereeName = referee.username;
+                      cornerBRefereeId = referee?.userId;
+                      cornerBRefereeName = referee?.username;
                     }
                     errorMessage = null;
                   }),
@@ -226,16 +226,16 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
 
                 CustomDropdown(
                   label: 'Corner C Referee',
-                  items: refereeUsernames,
-                  value:
-                      _getUsernameById(participants.referees, cornerCRefereeId),
+                  items: refereeUsernames ?? [],
+                  value: _getUsernameById(
+                      participants.referees ?? [], cornerCRefereeId),
                   onChanged: (value) => setState(() {
                     if (value != null) {
-                      final referee = participants.referees.firstWhere(
+                      final referee = participants.referees?.firstWhere(
                         (r) => _getUsername(r) == value,
                       );
-                      cornerCRefereeId = referee.userId;
-                      cornerCRefereeName = referee.username;
+                      cornerCRefereeId = referee?.userId;
+                      cornerCRefereeName = referee?.username;
                     }
                     errorMessage = null;
                   }),
@@ -253,7 +253,8 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
                   ),
 
                 ElevatedButton(
-                  onPressed: () => createCompetition(participants.eventId),
+                  onPressed: () =>
+                      createCompetition(participants.eventId ?? ""),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(

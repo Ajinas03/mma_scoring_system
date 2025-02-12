@@ -102,7 +102,7 @@ class EventRepo {
     }
   }
 
-  static Future<GetParicipantsModel> getParticipants(String eventId) async {
+  static Future<GetParicipantsModel?> getParticipants(String eventId) async {
     const key = "getParticipants";
     final bearerToken =
         SharedPrefsConfig.getString(SharedPrefsConfig.keyAccessToken);

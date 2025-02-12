@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/config/toast_config.dart';
-import 'package:my_app/repo/auth_repo.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../config/screen_config.dart';
+import '../logic/auth/auth_bloc.dart';
 import '../models/user_exist_model.dart';
 import '../screen/add_data/create_participants_screen.dart.dart';
 
@@ -47,24 +47,29 @@ Future<void> checkUserAndNavigate(
               onPressed: () => Navigator.of(context).pop(false),
               child: const Text('Create New'),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                final result = await AuthRepository().addParticipantToEvent(
-                    userId: existingUser.userId,
-                    eventId: eventId,
-                    phone: phone,
-                    fname: existingUser.fname,
-                    lname: existingUser.lname,
-                    role: role);
-
-                ToastConfig.showToast(
-                    context,
-                    result ? "User added Successfully" : "User add error",
-                    !result);
-
-                Navigator.of(context).pop(true);
+            BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, state) {
+                return state.isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : ElevatedButton(
+                        onPressed: () async {
+                          context.read<AuthBloc>().add(
+                                AddExistingParticipant(
+                                  userId: existingUser.userId,
+                                  eventId: eventId,
+                                  phone: phone,
+                                  fname: existingUser.fname,
+                                  lname: existingUser.lname,
+                                  role: role,
+                                  context: context,
+                                ),
+                              );
+                        },
+                        child: const Text('Use Existing'),
+                      );
               },
-              child: const Text('Use Existing'),
             ),
           ],
         ),

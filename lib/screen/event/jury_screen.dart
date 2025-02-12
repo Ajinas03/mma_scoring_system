@@ -45,7 +45,7 @@ class JuryScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 PlayerListWidget(
-                  participants: participants.jury,
+                  participants: participants.jury ?? [],
                 ),
               ],
             ),

@@ -44,7 +44,7 @@ class PlayersScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 PlayerListWidget(
-                  participants: participants.players,
+                  participants: participants.players ?? [],
                 ),
               ],
             ),

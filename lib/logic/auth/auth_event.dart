@@ -82,3 +82,22 @@ class CreateParticipantEvent extends AuthEvent {
   final String zipcode;
   BuildContext context;
 }
+
+class AddExistingParticipant extends AuthEvent {
+  final String userId;
+  final String eventId;
+  final String phone;
+  final String fname;
+  final String lname;
+  final String role;
+  final BuildContext context;
+
+  AddExistingParticipant(
+      {required this.eventId,
+      required this.context,
+      required this.role,
+      required this.userId,
+      required this.fname,
+      required this.lname,
+      required this.phone});
+}

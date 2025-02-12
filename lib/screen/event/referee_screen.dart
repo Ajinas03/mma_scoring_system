@@ -45,7 +45,7 @@ class RefereeScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 PlayerListWidget(
-                  participants: participants.referees,
+                  participants: participants.referees ?? [],
                 ),
               ],
             ),

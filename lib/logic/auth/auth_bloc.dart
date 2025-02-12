@@ -176,8 +176,42 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               eventId: event.eventId);
         }
 
-        emit(AuthState(isLoading: false, userExistModel: userExistModel));
+        emit(AuthState(
+          isLoading: false,
+          userExistModel: userExistModel,
+        ));
       }
+    });
+
+    on<AddExistingParticipant>((event, emit) async {
+      emit(AuthState(
+        isLoading: true,
+        userExistModel: state.userExistModel,
+      ));
+      final result = await AuthRepository().addParticipantToEvent(
+          userId: event.userId,
+          eventId: event.eventId,
+          phone: event.phone,
+          fname: event.fname,
+          lname: event.lname,
+          role: event.role);
+
+      if (result) {
+        Navigator.pop(event.context);
+        Navigator.pop(event.context);
+
+        ToastConfig.showToast(
+            event.context, "Existing user added successfully", false);
+      } else {
+        Navigator.pop(event.context);
+
+        ToastConfig.showToast(event.context, "Existing user add error", true);
+      }
+
+      emit(AuthState(
+        isLoading: false,
+        userExistModel: state.userExistModel,
+      ));
     });
   }
 }

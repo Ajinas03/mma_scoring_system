@@ -55,7 +55,7 @@ Widget _buildParticipantList(List<Jury> participants) {
                         ),
                       ],
                     ),
-                    if (participant.weight > 0) ...[
+                    if ((participant.weight ?? 0) > 0) ...[
                       const SizedBox(height: 4),
                       Row(
                         children: [
@@ -74,9 +74,9 @@ Widget _buildParticipantList(List<Jury> participants) {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      participant.gender.toLowerCase() == 'male'
+                      participant.gender?.toLowerCase() == 'male'
                           ? Icons.male
-                          : participant.gender.toLowerCase() == 'female'
+                          : participant.gender?.toLowerCase() == 'female'
                               ? Icons.female
                               : Icons.person,
                       size: 20,

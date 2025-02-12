@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_app/logic/auth/auth_bloc.dart';
-import 'package:my_app/screen/auth/widget/custom_dropdown_widget.dart';
 import 'package:my_app/screen/common/text_widget.dart';
 
 import '../common/city_search_dropdown.dart';
@@ -21,7 +20,7 @@ class _SignupScreenState extends State<SignupScreen> {
     'lname': '',
     'email': '',
     'phone': '',
-    'role': '',
+    // 'role': '',
     'password': '',
     'city': '',
     'state': '',
@@ -29,7 +28,7 @@ class _SignupScreenState extends State<SignupScreen> {
     'zipcode': '',
   };
 
-  final List<String> _roles = ['admin', 'player', 'jury', 'referee'];
+  // final List<String> _roles = ['admin', 'player', 'jury', 'referee'];
 
   bool get _isFormValid => _formData.values.every((value) => value.isNotEmpty);
 
@@ -42,7 +41,11 @@ class _SignupScreenState extends State<SignupScreen> {
               lname: _formData['lname']!,
               email: _formData['email']!,
               phone: _formData['phone']!,
-              role: _formData['role']!,
+              role: "admin"
+
+              // _formData['role']!
+
+              ,
               password: _formData['password']!,
               city: _formData['city']!,
               state: _formData['state']!,
@@ -107,13 +110,13 @@ class _SignupScreenState extends State<SignupScreen> {
                   onChanged: (value) =>
                       setState(() => _formData['phone'] = value),
                 ),
-                CustomDropdown(
-                  label: 'Role',
-                  value: _formData['role'],
-                  items: _roles,
-                  onChanged: (value) =>
-                      setState(() => _formData['role'] = value ?? ''),
-                ),
+                // CustomDropdown(
+                //   label: 'Role',
+                //   value: _formData['role'],
+                //   items: _roles,
+                //   onChanged: (value) =>
+                //       setState(() => _formData['role'] = value ?? ''),
+                // ),
                 CustomInputField(
                   label: 'Password',
                   value: _formData['password'],
